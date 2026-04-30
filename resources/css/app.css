@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.vue';
+
+@theme {
+    /*
+     * Latin chars → Instrument Sans
+     * Malayalam chars → Noto Sans Malayalam (browser falls through automatically
+     *                   when a glyph is missing from the previous font)
+     */
+    --font-sans:  'Instrument Sans', 'Noto Sans Malayalam', ui-sans-serif,
+                  system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+                  'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /*
+     * Used for blog post prose content — Noto Serif Malayalam gives
+     * a comfortable reading feel for long-form Malayalam articles.
+     */
+    --font-serif: 'Noto Serif Malayalam', ui-serif, Georgia, Cambria,
+                  'Times New Roman', Times, serif;
+}
