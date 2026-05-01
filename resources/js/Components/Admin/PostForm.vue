@@ -17,6 +17,26 @@
                     <p v-if="form.errors.title" :class="err">{{ form.errors.title }}</p>
                 </div>
 
+                <!-- Slug -->
+                <div>
+                    <label :class="lbl">
+                        Slug
+                        <span class="text-gray-400 font-normal ml-1">(used in the URL)</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-sm text-gray-400 pointer-events-none select-none">
+                            /posts/
+                        </span>
+                        <input
+                            v-model="form.slug"
+                            type="text"
+                            placeholder="my-awesome-post"
+                            :class="[inp, 'pl-16', form.errors.slug && inpErr]"
+                        />
+                    </div>
+                    <p v-if="form.errors.slug" :class="err">{{ form.errors.slug }}</p>
+                </div>
+
                 <!-- Description -->
                 <div>
                     <label :class="lbl">

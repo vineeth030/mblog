@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'title',
+    'slug',
     'description',
     'category',
     'author_name',
@@ -17,6 +18,11 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class BlogPost extends Model
 {
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     protected function casts(): array
     {
         return [

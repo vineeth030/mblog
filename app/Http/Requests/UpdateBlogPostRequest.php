@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class UpdateBlogPostRequest extends FormRequest
 {
@@ -11,10 +13,18 @@ class UpdateBlogPostRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('slug')) {
+            $this->merge(['slug' => Str::slug($this->slug)]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'title'          => ['required', 'string', 'max:255'],
+            'slug'           => ['required', 'string', 'max:255', Rule::unique('blog_posts', 'slug')->ignore($this->blogPost)],
             'description'    => ['required', 'string', 'max:500'],
             'category'       => ['required', 'string', 'max:100'],
             'author_name'    => ['required', 'string', 'max:100'],

@@ -5,7 +5,7 @@
             <!-- Site intro -->
             <div class="py-12 border-b border-gray-100">
                 <h1 class="text-4xl font-bold tracking-tight">Stories worth reading.</h1>
-                <p class="mt-2 text-gray-500">Ideas, tutorials, and thoughts on web development.</p>
+                <!--<p class="mt-2 text-gray-500">Ideas, tutorials, and thoughts on web development.</p>-->
             </div>
 
             <!-- Category filter -->
@@ -36,13 +36,13 @@
             <div v-if="posts.data.length > 0" class="divide-y divide-gray-100">
                 <article
                     v-for="post in posts.data"
-                    :key="post.id"
+                    :key="post.slug"
                     class="py-8 flex gap-6 items-start"
                 >
                     <!-- Text -->
                     <div class="flex-1 min-w-0">
                         <Link
-                            :href="route('blog.show', post.id)"
+                            :href="route('blog.show', post.slug)"
                             class="block group"
                         >
                             <span class="text-xs font-medium text-indigo-600 uppercase tracking-wide">
@@ -66,7 +66,7 @@
                     <!-- Thumbnail -->
                     <Link
                         v-if="post.cover_image_url"
-                        :href="route('blog.show', post.id)"
+                        :href="route('blog.show', post.slug)"
                         class="shrink-0 w-28 h-20 sm:w-36 sm:h-24 rounded-lg overflow-hidden bg-gray-100"
                     >
                         <img

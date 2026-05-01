@@ -37,6 +37,7 @@ const props = defineProps({
 
 const form = useForm({
     title:          props.post.title,
+    slug:           props.post.slug,
     description:    props.post.description,
     category:       props.post.category,
     author_name:    props.post.author_name,
@@ -46,6 +47,6 @@ const form = useForm({
 });
 
 function submit() {
-    form.put(route('admin.blog-posts.update', props.post.id));
+    form.put(route('admin.blog-posts.update', props.post.slug));
 }
 </script>

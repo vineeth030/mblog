@@ -18,6 +18,14 @@
         @routes
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @inertiaHead
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-1S3M836CHF"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'G-1S3M836CHF');
+        </script>
     </head>
     <body class="antialiased">
         @inertia

@@ -10,7 +10,7 @@ use Inertia\Response;
 class AdminAuthController extends Controller
 {
     private const USERNAME = 'admin';
-    private const PASSWORD = 'password123';
+    private const PASSWORD = 'Admin#123';
 
     public function showLogin(): Response|RedirectResponse
     {

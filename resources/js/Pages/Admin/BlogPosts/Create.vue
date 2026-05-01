@@ -32,6 +32,7 @@ import PostForm    from '@/Components/Admin/PostForm.vue';
 
 const form = useForm({
     title:          '',
+    slug:           '',
     description:    '',
     category:       '',
     author_name:    '',

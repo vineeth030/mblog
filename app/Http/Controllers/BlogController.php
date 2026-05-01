@@ -30,7 +30,7 @@ class BlogController extends Controller
             ->paginate(10)
             ->withQueryString()
             ->through(fn (BlogPost $post) => [
-                'id'              => $post->id,
+                'slug'            => $post->slug,
                 'title'           => $post->title,
                 'description'     => $post->description,
                 'category'        => $post->category,

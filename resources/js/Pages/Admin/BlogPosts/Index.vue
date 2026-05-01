@@ -48,7 +48,7 @@
                 <tbody class="divide-y divide-gray-100">
                     <tr
                         v-for="post in posts.data"
-                        :key="post.id"
+                        :key="post.slug"
                         class="hover:bg-gray-50 transition"
                     >
                         <!-- Thumbnail -->
@@ -104,7 +104,7 @@
                         <!-- Actions -->
                         <td class="px-4 py-3 text-right whitespace-nowrap">
                             <Link
-                                :href="route('admin.blog-posts.edit', post.id)"
+                                :href="route('admin.blog-posts.edit', post.slug)"
                                 class="text-indigo-600 hover:text-indigo-800 font-medium mr-4 transition"
                             >
                                 Edit
@@ -162,6 +162,6 @@ defineProps({
 
 function deletePost(post) {
     if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
-    router.delete(route('admin.blog-posts.destroy', post.id));
+    router.delete(route('admin.blog-posts.destroy', post.slug));
 }
 </script>

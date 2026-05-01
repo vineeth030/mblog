@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name'     => 'admin',
             'email'    => 'admin@mblog.test',
-            'password' => 'password123',
+            'password' => 'Admin#123',
         ]);
 
         $this->call(BlogPostSeeder::class);

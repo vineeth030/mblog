@@ -17,7 +17,7 @@ class BlogPostController extends Controller
         $posts = BlogPost::latest()
             ->paginate(10)
             ->through(fn (BlogPost $post) => [
-                'id'             => $post->id,
+                'slug'           => $post->slug,
                 'title'          => $post->title,
                 'category'       => $post->category,
                 'author_name'    => $post->author_name,
@@ -56,7 +56,7 @@ class BlogPostController extends Controller
     {
         return Inertia::render('Admin/BlogPosts/Edit', [
             'post' => [
-                'id'             => $blogPost->id,
+                'slug'           => $blogPost->slug,
                 'title'          => $blogPost->title,
                 'description'    => $blogPost->description,
                 'category'       => $blogPost->category,
