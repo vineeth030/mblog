@@ -42,9 +42,9 @@
                     {{ post.title }}
                 </h1>
 
-                <p class="mt-4 text-lg text-gray-500 leading-relaxed">
+                <!--<p class="mt-4 text-lg text-gray-500 leading-relaxed">
                     {{ post.description }}
-                </p>
+                </p>-->
 
                 <div class="mt-6 flex items-center gap-3">
                     <!-- Author avatar placeholder -->

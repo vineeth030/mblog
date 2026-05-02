@@ -18,6 +18,7 @@ class BlogController extends Controller
         $this->md = new CommonMarkConverter([
             'html_input'         => 'strip',
             'allow_unsafe_links' => false,
+            'renderer'           => ['soft_break' => "<br />\n"],
         ]);
     }
 
