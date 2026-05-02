@@ -109,25 +109,31 @@
                     <!-- Category -->
                     <div class="px-4 py-3">
                         <label :class="lbl">Category</label>
-                        <input
-                            v-model="form.category"
-                            type="text"
-                            placeholder="e.g. Tutorial, Vue, Laravel"
-                            :class="[inp, form.errors.category && inpErr]"
-                        />
-                        <p v-if="form.errors.category" :class="err">{{ form.errors.category }}</p>
+                        <select
+                            v-model="form.category_id"
+                            :class="[inp, form.errors.category_id && inpErr]"
+                        >
+                            <option value="" disabled>Select a category…</option>
+                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                                {{ cat.name }}
+                            </option>
+                        </select>
+                        <p v-if="form.errors.category_id" :class="err">{{ form.errors.category_id }}</p>
                     </div>
 
                     <!-- Author -->
                     <div class="px-4 py-3">
                         <label :class="lbl">Author</label>
-                        <input
-                            v-model="form.author_name"
-                            type="text"
-                            placeholder="Author name"
-                            :class="[inp, form.errors.author_name && inpErr]"
-                        />
-                        <p v-if="form.errors.author_name" :class="err">{{ form.errors.author_name }}</p>
+                        <select
+                            v-model="form.author_id"
+                            :class="[inp, form.errors.author_id && inpErr]"
+                        >
+                            <option value="" disabled>Select an author…</option>
+                            <option v-for="author in authors" :key="author.id" :value="author.id">
+                                {{ author.name }}
+                            </option>
+                        </select>
+                        <p v-if="form.errors.author_id" :class="err">{{ form.errors.author_id }}</p>
                     </div>
 
                     <!-- Cover image -->
@@ -203,6 +209,8 @@ const props = defineProps({
     form:             { type: Object, required: true },
     existingImageUrl: { type: String, default: null  },
     submitLabel:      { type: String, default: 'Save Post' },
+    categories:       { type: Array,  default: () => [] },
+    authors:          { type: Array,  default: () => [] },
 });
 
 defineEmits(['submit']);

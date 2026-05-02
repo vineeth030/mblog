@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,8 +25,9 @@ class BlogController extends Controller
     {
         $category = $request->query('category');
 
-        $posts = BlogPost::where('publish_status', true)
-            ->when($category, fn ($q) => $q->where('category', $category))
+        $posts = BlogPost::with(['category', 'author'])
+            ->where('publish_status', true)
+            ->when($category, fn ($q) => $q->whereHas('category', fn ($q) => $q->where('name', $category)))
             ->latest()
             ->paginate(10)
             ->withQueryString()
@@ -33,16 +35,15 @@ class BlogController extends Controller
                 'slug'            => $post->slug,
                 'title'           => $post->title,
                 'description'     => $post->description,
-                'category'        => $post->category,
-                'author_name'     => $post->author_name,
+                'category'        => $post->category?->name,
+                'author_name'     => $post->author?->name,
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
             ]);
 
-        $categories = BlogPost::where('publish_status', true)
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
+        $categories = Category::whereHas('blogPosts', fn ($q) => $q->where('publish_status', true))
+            ->orderBy('name')
+            ->pluck('name');
 
         return Inertia::render('Blog/Index', [
             'posts'           => $posts,
@@ -64,8 +65,8 @@ class BlogController extends Controller
                 'slug'            => $blogPost->slug,
                 'title'           => $blogPost->title,
                 'description'     => $blogPost->description,
-                'category'        => $blogPost->category,
-                'author_name'     => $blogPost->author_name,
+                'category'        => $blogPost->category?->name,
+                'author_name'     => $blogPost->author?->name,
                 'cover_image_url' => $blogPost->cover_image_url,
                 'content_html'    => (string) $this->md->convert($pages[$currentPage - 1]),
                 'created_at'      => $blogPost->created_at->format('M j, Y'),

@@ -26,8 +26,8 @@ class UpdateBlogPostRequest extends FormRequest
             'title'          => ['required', 'string', 'max:255'],
             'slug'           => ['required', 'string', 'max:255', Rule::unique('blog_posts', 'slug')->ignore($this->route('blog_post'))],
             'description'    => ['required', 'string', 'max:500'],
-            'category'       => ['required', 'string', 'max:100'],
-            'author_name'    => ['required', 'string', 'max:100'],
+            'category_id'    => ['required', 'integer', 'exists:categories,id'],
+            'author_id'      => ['required', 'integer', 'exists:authors,id'],
             'content'        => ['required', 'string'],
             'publish_status' => ['required', 'boolean'],
             // Optional on update — only validated when a new file is uploaded

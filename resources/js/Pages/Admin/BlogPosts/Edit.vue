@@ -19,6 +19,8 @@
         <PostForm
             :form="form"
             :existing-image-url="post.cover_image_url"
+            :categories="categories"
+            :authors="authors"
             submit-label="Update Post"
             @submit="submit"
         />
@@ -32,15 +34,17 @@ import AdminLayout from '@/Components/Admin/AdminLayout.vue';
 import PostForm    from '@/Components/Admin/PostForm.vue';
 
 const props = defineProps({
-    post: { type: Object, required: true },
+    post:       { type: Object, required: true },
+    categories: { type: Array,  default: () => [] },
+    authors:    { type: Array,  default: () => [] },
 });
 
 const form = useForm({
     title:          props.post.title,
     slug:           props.post.slug,
     description:    props.post.description,
-    category:       props.post.category,
-    author_name:    props.post.author_name,
+    category_id:    props.post.category_id,
+    author_id:      props.post.author_id,
     content:        props.post.content,
     publish_status: props.post.publish_status ? 1 : 0,
     cover_image:    null,

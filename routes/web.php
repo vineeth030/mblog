@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BlogPostController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
@@ -21,5 +23,11 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::get('dashboard', fn () => redirect()->route('admin.blog-posts.index'))->name('dashboard');
 
     Route::resource('blog-posts', BlogPostController::class)
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::resource('categories', CategoryController::class)
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::resource('authors', AuthorController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 });

@@ -9,9 +9,24 @@
                     <nav class="hidden sm:flex items-center gap-4">
                         <Link
                             :href="route('admin.blog-posts.index')"
-                            class="text-sm text-gray-500 hover:text-gray-900 transition"
+                            class="text-sm transition"
+                            :class="isActive('admin.blog-posts') ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'"
                         >
                             Posts
+                        </Link>
+                        <Link
+                            :href="route('admin.categories.index')"
+                            class="text-sm transition"
+                            :class="isActive('admin.categories') ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'"
+                        >
+                            Categories
+                        </Link>
+                        <Link
+                            :href="route('admin.authors.index')"
+                            class="text-sm transition"
+                            :class="isActive('admin.authors') ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'"
+                        >
+                            Authors
                         </Link>
                     </nav>
                 </div>
@@ -73,6 +88,11 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
+
+function isActive(prefix) {
+    const current = route().current();
+    return current ? current.startsWith(prefix) : false;
+}
 
 const page = usePage();
 const toast = ref({ message: null, type: 'success' });

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBlogPostRequest;
 use App\Http\Requests\UpdateBlogPostRequest;
+use App\Models\Author;
 use App\Models\BlogPost;
+use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,16 +16,17 @@ class BlogPostController extends Controller
 {
     public function index(): Response
     {
-        $posts = BlogPost::latest()
+        $posts = BlogPost::with(['category', 'author'])
+            ->latest()
             ->paginate(10)
             ->through(fn (BlogPost $post) => [
-                'slug'           => $post->slug,
-                'title'          => $post->title,
-                'category'       => $post->category,
-                'author_name'    => $post->author_name,
-                'publish_status' => $post->publish_status,
-                'cover_image_url'=> $post->cover_image_url,
-                'created_at'     => $post->created_at->toDateString(),
+                'slug'            => $post->slug,
+                'title'           => $post->title,
+                'category'        => $post->category?->name,
+                'author_name'     => $post->author?->name,
+                'publish_status'  => $post->publish_status,
+                'cover_image_url' => $post->cover_image_url,
+                'created_at'      => $post->created_at->toDateString(),
             ]);
 
         return Inertia::render('Admin/BlogPosts/Index', [
@@ -33,7 +36,10 @@ class BlogPostController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/BlogPosts/Create');
+        return Inertia::render('Admin/BlogPosts/Create', [
+            'categories' => Category::orderBy('name')->get(['id', 'name']),
+            'authors'    => Author::orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function store(StoreBlogPostRequest $request): RedirectResponse
@@ -56,15 +62,17 @@ class BlogPostController extends Controller
     {
         return Inertia::render('Admin/BlogPosts/Edit', [
             'post' => [
-                'slug'           => $blogPost->slug,
-                'title'          => $blogPost->title,
-                'description'    => $blogPost->description,
-                'category'       => $blogPost->category,
-                'author_name'    => $blogPost->author_name,
-                'content'        => $blogPost->content,
-                'publish_status' => $blogPost->publish_status,
-                'cover_image_url'=> $blogPost->cover_image_url,
+                'slug'            => $blogPost->slug,
+                'title'           => $blogPost->title,
+                'description'     => $blogPost->description,
+                'category_id'     => $blogPost->category_id,
+                'author_id'       => $blogPost->author_id,
+                'content'         => $blogPost->content,
+                'publish_status'  => $blogPost->publish_status,
+                'cover_image_url' => $blogPost->cover_image_url,
             ],
+            'categories' => Category::orderBy('name')->get(['id', 'name']),
+            'authors'    => Author::orderBy('name')->get(['id', 'name']),
         ]);
     }
 

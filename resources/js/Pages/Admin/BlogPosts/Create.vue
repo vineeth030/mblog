@@ -18,6 +18,8 @@
 
         <PostForm
             :form="form"
+            :categories="categories"
+            :authors="authors"
             submit-label="Publish Post"
             @submit="submit"
         />
@@ -30,12 +32,17 @@ import { Link, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Components/Admin/AdminLayout.vue';
 import PostForm    from '@/Components/Admin/PostForm.vue';
 
+defineProps({
+    categories: { type: Array, default: () => [] },
+    authors:    { type: Array, default: () => [] },
+});
+
 const form = useForm({
     title:          '',
     slug:           '',
     description:    '',
-    category:       '',
-    author_name:    '',
+    category_id:    '',
+    author_id:      '',
     content:        '',
     publish_status: 0,
     cover_image:    null,
