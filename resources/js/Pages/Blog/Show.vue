@@ -76,6 +76,40 @@
                 v-html="post.content_html"
             />
 
+            <!-- Pagination -->
+            <div
+                v-if="pagination"
+                class="mt-12 flex items-center justify-between border-t border-gray-100 pt-8"
+            >
+                <Link
+                    v-if="pagination.current_page > 1"
+                    :href="route('blog.show', { blogPost: post.slug, page: pagination.current_page - 1 })"
+                    class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Previous
+                </Link>
+                <span v-else />
+
+                <span class="text-sm text-gray-400">
+                    Page {{ pagination.current_page }} of {{ pagination.total_pages }}
+                </span>
+
+                <Link
+                    v-if="pagination.current_page < pagination.total_pages"
+                    :href="route('blog.show', { blogPost: post.slug, page: pagination.current_page + 1 })"
+                    class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition"
+                >
+                    Next
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </Link>
+                <span v-else />
+            </div>
+
             <!-- Footer -->
             <footer class="mt-16 py-8 border-t border-gray-100">
                 <Link
@@ -95,6 +129,7 @@ import { Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 
 defineProps({
-    post: { type: Object, required: true },
+    post:       { type: Object, required: true },
+    pagination: { type: Object, default: null },
 });
 </script>

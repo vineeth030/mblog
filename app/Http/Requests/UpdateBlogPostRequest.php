@@ -24,7 +24,7 @@ class UpdateBlogPostRequest extends FormRequest
     {
         return [
             'title'          => ['required', 'string', 'max:255'],
-            'slug'           => ['required', 'string', 'max:255', Rule::unique('blog_posts', 'slug')->ignore($this->blogPost)],
+            'slug'           => ['required', 'string', 'max:255', Rule::unique('blog_posts', 'slug')->ignore($this->route('blog_post'))],
             'description'    => ['required', 'string', 'max:500'],
             'category'       => ['required', 'string', 'max:100'],
             'author_name'    => ['required', 'string', 'max:100'],
