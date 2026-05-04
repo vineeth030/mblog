@@ -30,6 +30,8 @@ class StoreBlogPostRequest extends FormRequest
             'content'        => ['required', 'string'],
             'publish_status' => ['required', 'boolean'],
             'cover_image'    => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
+            'tags'           => ['nullable', 'array'],
+            'tags.*'         => ['string', 'max:50'],
         ];
     }
 }

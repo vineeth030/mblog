@@ -8,7 +8,9 @@ use App\Http\Requests\UpdateBlogPostRequest;
 use App\Models\Author;
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -45,13 +47,16 @@ class BlogPostController extends Controller
     public function store(StoreBlogPostRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $tagNames = $data['tags'] ?? [];
+        unset($data['tags']);
 
         if ($request->hasFile('cover_image')) {
             $data['cover_image'] = $request->file('cover_image')
                 ->store('blog-covers', 'public');
         }
 
-        BlogPost::create($data);
+        $post = BlogPost::create($data);
+        $post->tags()->sync($this->resolveTagIds($tagNames));
 
         return redirect()
             ->route('admin.blog-posts.index')
@@ -60,6 +65,8 @@ class BlogPostController extends Controller
 
     public function edit(BlogPost $blogPost): Response
     {
+        $blogPost->loadMissing('tags');
+
         return Inertia::render('Admin/BlogPosts/Edit', [
             'post' => [
                 'slug'            => $blogPost->slug,
@@ -70,6 +77,7 @@ class BlogPostController extends Controller
                 'content'         => $blogPost->content,
                 'publish_status'  => $blogPost->publish_status,
                 'cover_image_url' => $blogPost->cover_image_url,
+                'tags'            => $blogPost->tags->pluck('name'),
             ],
             'categories' => Category::orderBy('name')->get(['id', 'name']),
             'authors'    => Author::orderBy('name')->get(['id', 'name']),
@@ -79,6 +87,8 @@ class BlogPostController extends Controller
     public function update(UpdateBlogPostRequest $request, BlogPost $blogPost): RedirectResponse
     {
         $data = $request->validated();
+        $tagNames = $data['tags'] ?? [];
+        unset($data['tags']);
 
         if ($request->hasFile('cover_image')) {
             $blogPost->deleteCoverImage();
@@ -90,10 +100,25 @@ class BlogPostController extends Controller
         }
 
         $blogPost->update($data);
+        $blogPost->tags()->sync($this->resolveTagIds($tagNames));
 
         return redirect()
             ->route('admin.blog-posts.index')
             ->with('success', 'Post updated successfully.');
+    }
+
+    private function resolveTagIds(array $tagNames): array
+    {
+        return collect($tagNames)
+            ->map(fn (string $name) => trim(mb_strtolower($name)))
+            ->filter()
+            ->unique()
+            ->map(function (string $name) {
+                $slug = Str::slug($name);
+                return Tag::firstOrCreate(['slug' => $slug], ['name' => $name])->id;
+            })
+            ->values()
+            ->all();
     }
 
     public function destroy(BlogPost $blogPost): RedirectResponse

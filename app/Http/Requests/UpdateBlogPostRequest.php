@@ -32,6 +32,8 @@ class UpdateBlogPostRequest extends FormRequest
             'publish_status' => ['required', 'boolean'],
             // Optional on update — only validated when a new file is uploaded
             'cover_image'    => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
+            'tags'           => ['nullable', 'array'],
+            'tags.*'         => ['string', 'max:50'],
         ];
     }
 }

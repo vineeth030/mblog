@@ -48,6 +48,7 @@ const form = useForm({
     content:        props.post.content,
     publish_status: props.post.publish_status ? 1 : 0,
     cover_image:    null,
+    tags:           props.post.tags ?? [],
 });
 
 function submit() {

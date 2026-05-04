@@ -61,6 +61,8 @@ class BlogController extends Controller
         $totalPages = count($pages);
         $currentPage = max(1, min((int) $request->query('page', 1), $totalPages));
 
+        $blogPost->loadMissing('tags');
+
         return Inertia::render('Blog/Show', [
             'post' => [
                 'slug'            => $blogPost->slug,
@@ -71,6 +73,7 @@ class BlogController extends Controller
                 'cover_image_url' => $blogPost->cover_image_url,
                 'content_html'    => (string) $this->md->convert($pages[$currentPage - 1]),
                 'created_at'      => $blogPost->created_at->format('M j, Y'),
+                'tags'            => $blogPost->tags->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug]),
             ],
             'pagination' => $totalPages > 1 ? [
                 'current_page' => $currentPage,

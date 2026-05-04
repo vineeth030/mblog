@@ -46,6 +46,7 @@ const form = useForm({
     content:        '',
     publish_status: 0,
     cover_image:    null,
+    tags:           [],
 });
 
 function submit() {

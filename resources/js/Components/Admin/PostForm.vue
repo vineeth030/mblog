@@ -136,6 +136,41 @@
                         <p v-if="form.errors.author_id" :class="err">{{ form.errors.author_id }}</p>
                     </div>
 
+                    <!-- Tags -->
+                    <div class="px-4 py-3">
+                        <label :class="lbl">Tags</label>
+                        <div
+                            class="mt-1 flex flex-wrap gap-1.5 p-2 rounded-lg border border-gray-300
+                                   focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500
+                                   transition min-h-[38px]"
+                        >
+                            <span
+                                v-for="(tag, i) in form.tags"
+                                :key="i"
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full
+                                       bg-indigo-50 text-indigo-700 text-xs font-medium"
+                            >
+                                {{ tag }}
+                                <button
+                                    type="button"
+                                    @click="removeTag(i)"
+                                    class="text-indigo-400 hover:text-indigo-700 transition leading-none"
+                                >&times;</button>
+                            </span>
+                            <input
+                                v-model="tagInput"
+                                type="text"
+                                placeholder="Add tag…"
+                                class="flex-1 min-w-[80px] text-sm text-gray-900 bg-transparent outline-none"
+                                @keydown.enter.prevent="addTagFromInput"
+                                @keydown.,="addTagFromInput"
+                                @blur="addTagFromInput"
+                            />
+                        </div>
+                        <p class="mt-1 text-xs text-gray-400">Press Enter or comma to add a tag</p>
+                        <p v-if="form.errors.tags" :class="err">{{ form.errors.tags }}</p>
+                    </div>
+
                     <!-- Cover image -->
                     <div class="px-4 py-3">
                         <label :class="lbl">Cover Image</label>
@@ -217,6 +252,21 @@ defineEmits(['submit']);
 
 const fileInput = ref(null);
 const preview   = ref(null);
+const tagInput  = ref('');
+
+function addTagFromInput() {
+    const raw = tagInput.value.replace(/,/g, '').trim().toLowerCase();
+    if (!raw) return;
+    if (!props.form.tags) props.form.tags = [];
+    if (!props.form.tags.includes(raw)) {
+        props.form.tags.push(raw);
+    }
+    tagInput.value = '';
+}
+
+function removeTag(index) {
+    props.form.tags.splice(index, 1);
+}
 
 // Class constants — avoids @apply (not supported in SFC <style> with Tailwind v4)
 const lbl    = 'block text-sm font-medium text-gray-700 mb-1';

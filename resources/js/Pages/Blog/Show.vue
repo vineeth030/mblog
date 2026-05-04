@@ -59,6 +59,19 @@
                 </div>
             </header>
 
+            <!-- Tags -->
+            <div v-if="post.tags?.length" class="mt-5 flex flex-wrap gap-2">
+                <Link
+                    v-for="tag in post.tags"
+                    :key="tag.slug"
+                    :href="route('tag.show', tag.slug)"
+                    class="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full
+                           hover:bg-indigo-100 hover:text-indigo-700 transition"
+                >
+                    #{{ tag.name }}
+                </Link>
+            </div>
+
             <!-- Divider -->
             <hr class="my-8 border-gray-200" />
 
