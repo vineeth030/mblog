@@ -4,10 +4,21 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Malayalam Kambi Stories – Latest Kambikathakal Daily | Kambikutan</title>
-        <meta name="description" content="Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy & real-life kambi stories only on Kambikutan.">
+        <meta head-key="description" name="description" content="Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy & real-life kambi stories only on Kambikutan.">
         <meta name="keywords" content="malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest">
         <meta name="robots" content="index, follow">
-        <link rel="canonical" href="https://kambikutan.com/">
+        <link head-key="canonical" rel="canonical" href="https://kambikutan.com/">
+
+        <meta property="og:title" content="Malayalam Kambi Stories – Kambikutan">
+        <meta property="og:description" content="Read latest kambikathakal in Malayalam. New stories updated daily.">
+        <meta property="og:image" content="https://kambikutan.com/cover.jpg">
+        <meta property="og:url" content="https://kambikutan.com/">
+        <meta property="og:type" content="website">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Malayalam Kambi Stories – Kambikutan">
+        <meta name="twitter:description" content="Latest kambikathakal updated daily. Read now.">
+        <meta name="twitter:image" content="https://kambikutan.com/cover.jpg">
         {{--
             Fonts loaded:
             · Noto Sans Malayalam — UI text in Malayalam

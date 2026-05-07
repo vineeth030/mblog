@@ -1,4 +1,10 @@
 <template>
+    <Head>
+        <title>{{ seoTitle }}</title>
+        <meta head-key="description" name="description" :content="seoDescription">
+        <link head-key="canonical" rel="canonical" :href="canonicalUrl">
+    </Head>
+
     <PublicLayout>
 
         <!-- Hero image -->
@@ -138,11 +144,18 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 
-defineProps({
+const props = defineProps({
     post:       { type: Object, required: true },
     pagination: { type: Object, default: null },
 });
+
+const seoTitle = computed(() => `${props.post.title} – Malayalam Story`);
+const seoDescription = computed(
+    () => `${props.post.description} in Malayalam. A romantic and thrilling story series. Continue reading now.`,
+);
+const canonicalUrl = computed(() => route('blog.show', props.post.slug));
 </script>
