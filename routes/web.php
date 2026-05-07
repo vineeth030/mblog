@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // ── Admin auth (guest only) ────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
