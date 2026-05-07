@@ -3,8 +3,11 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title inertia>{{ config('app.name') }}</title>
-
+        <title>Malayalam Kambi Stories – Latest Kambikathakal Daily | Kambikutan</title>
+        <meta name="description" content="Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy & real-life kambi stories only on Kambikutan.">
+        <meta name="keywords" content="malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="https://kambikutan.com/">
         {{--
             Fonts loaded:
             · Noto Sans Malayalam — UI text in Malayalam
