@@ -28,6 +28,13 @@
                         >
                             Authors
                         </Link>
+                        <Link
+                            :href="route('admin.story-submissions.index')"
+                            class="text-sm transition"
+                            :class="isActive('admin.story-submissions') ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'"
+                        >
+                            Submissions
+                        </Link>
                     </nav>
                 </div>
                 <button

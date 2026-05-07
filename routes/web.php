@@ -3,9 +3,11 @@
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\StorySubmissionController as AdminStorySubmissionController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\StorySubmissionController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,10 @@ Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// ── Public story submission ────────────────────────────────
+Route::get('/submit-story', [StorySubmissionController::class, 'create'])->name('stories.submit');
+Route::post('/submit-story', [StorySubmissionController::class, 'store'])->name('stories.submit.store');
 
 // ── Admin auth (guest only) ────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -34,4 +40,11 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
 
     Route::resource('authors', AuthorController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::resource('story-submissions', AdminStorySubmissionController::class)
+        ->only(['index', 'show', 'destroy']);
+    Route::patch('story-submissions/{storySubmission}/status', [AdminStorySubmissionController::class, 'updateStatus'])
+        ->name('story-submissions.status');
+    Route::get('story-submissions/{storySubmission}/download', [AdminStorySubmissionController::class, 'download'])
+        ->name('story-submissions.download');
 });

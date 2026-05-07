@@ -7,12 +7,12 @@
                 <Link :href="route('blog.index')" class="font-bold text-xl tracking-tight hover:opacity-70 transition">
                     kambikutan.com
                 </Link>
-                <!--<Link
-                    :href="route('admin.login')"
+                <Link
+                    :href="route('stories.submit')"
                     class="text-xs text-gray-400 hover:text-gray-700 transition"
                 >
-                    Admin →
-                </Link>-->
+                    Submit Story →
+                </Link>
             </div>
         </header>
 
