@@ -3,6 +3,14 @@
         <title>{{ seoTitle }}</title>
         <meta head-key="description" name="description" :content="seoDescription">
         <link head-key="canonical" rel="canonical" :href="canonicalUrl">
+        <meta head-key="og:title" property="og:title" :content="post.title">
+        <meta head-key="og:description" property="og:description" :content="post.description">
+        <meta head-key="og:image" property="og:image" :content="post.cover_image_url || 'https://kambikutan.com/cover.jpg'">
+        <meta head-key="og:url" property="og:url" :content="canonicalUrl">
+        <meta head-key="og:type" property="og:type" content="article">
+        <meta head-key="twitter:title" name="twitter:title" :content="post.title">
+        <meta head-key="twitter:description" name="twitter:description" :content="post.description">
+        <meta head-key="twitter:image" name="twitter:image" :content="post.cover_image_url || 'https://kambikutan.com/cover.jpg'">
     </Head>
 
     <PublicLayout>
@@ -153,9 +161,9 @@ const props = defineProps({
     pagination: { type: Object, default: null },
 });
 
-const seoTitle = computed(() => `${props.post.title} – Malayalam Story`);
+const seoTitle = computed(() => `${props.post.title} – Malayalam erotic stories`);
 const seoDescription = computed(
-    () => `${props.post.description} in Malayalam. A romantic and thrilling story series. Continue reading now.`,
+    () => `Read ${props.post.description} in Malayalam. A romantic and thrilling story series. Continue reading now.`,
 );
 const canonicalUrl = computed(() => route('blog.show', props.post.slug));
 </script>

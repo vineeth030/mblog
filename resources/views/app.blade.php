@@ -3,22 +3,49 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Malayalam Kambi Stories – Latest Kambikathakal Daily | Kambikutan</title>
-        <meta head-key="description" name="description" content="Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy & real-life kambi stories only on Kambikutan.">
-        <meta name="keywords" content="malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest">
-        <meta name="robots" content="index, follow">
-        <link head-key="canonical" rel="canonical" href="https://kambikutan.com/">
+        @php
+            $component = $page['component'] ?? '';
+            $props = $page['props'] ?? [];
+            $post = $props['post'] ?? null;
 
-        <meta property="og:title" content="Malayalam Kambi Stories – Kambikutan">
-        <meta property="og:description" content="Read latest kambikathakal in Malayalam. New stories updated daily.">
-        <meta property="og:image" content="https://kambikutan.com/cover.jpg">
-        <meta property="og:url" content="https://kambikutan.com/">
-        <meta property="og:type" content="website">
+            if ($component === 'Blog/Show' && $post) {
+                $metaTitle      = $post['title'] . ' – Malayalam erotic stories';
+                $metaDesc       = 'Read ' . ($post['title'] ?? '') . ' in Malayalam. A romantic and thrilling story series. Continue reading now.';
+                $metaKeywords   = ($post['title'] ?? '') . ', malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest';
+                $metaCanonical  = route('blog.show', $post['slug']);
+                $ogTitle        = $post['title'];
+                $ogDesc         = $post['description'] ?? '';
+                $ogImage        = $post['cover_image_url'] ?? 'https://kambikutan.com/cover.jpg';
+                $ogUrl          = route('blog.show', $post['slug']);
+                $ogType         = 'article';
+            } else {
+                $metaTitle      = 'Malayalam Kambi Stories – Latest Kambikathakal Daily | Kambikutan';
+                $metaDesc       = 'Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy & real-life kambi stories only on Kambikutan.';
+                $metaKeywords   = 'malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest';
+                $metaCanonical  = url('/');
+                $ogTitle        = 'Malayalam Kambi Stories – Kambikutan';
+                $ogDesc         = 'Read latest kambikathakal in Malayalam. New stories updated daily.';
+                $ogImage        = 'https://kambikutan.com/cover.jpg';
+                $ogUrl          = url('/');
+                $ogType         = 'website';
+            }
+        @endphp
+        <title>{{ $metaTitle }}</title>
+        <meta data-inertia="description" name="description" content="{{ $metaDesc }}">
+        <meta name="keywords" content="{{ $metaKeywords }}">
+        <meta name="robots" content="index, follow">
+        <link data-inertia="canonical" rel="canonical" href="{{ $metaCanonical }}">
+
+        <meta data-inertia="og:title" property="og:title" content="{{ $ogTitle }}">
+        <meta data-inertia="og:description" property="og:description" content="{{ $ogDesc }}">
+        <meta data-inertia="og:image" property="og:image" content="{{ $ogImage }}">
+        <meta data-inertia="og:url" property="og:url" content="{{ $ogUrl }}">
+        <meta data-inertia="og:type" property="og:type" content="{{ $ogType }}">
 
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Malayalam Kambi Stories – Kambikutan">
-        <meta name="twitter:description" content="Latest kambikathakal updated daily. Read now.">
-        <meta name="twitter:image" content="https://kambikutan.com/cover.jpg">
+        <meta data-inertia="twitter:title" name="twitter:title" content="{{ $ogTitle }}">
+        <meta data-inertia="twitter:description" name="twitter:description" content="{{ $ogDesc }}">
+        <meta data-inertia="twitter:image" name="twitter:image" content="{{ $ogImage }}">
         {{--
             Fonts loaded:
             · Noto Sans Malayalam — UI text in Malayalam

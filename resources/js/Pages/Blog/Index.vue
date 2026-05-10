@@ -1,4 +1,17 @@
 <template>
+    <Head>
+        <title>Malayalam Kambi Stories – Latest Kambikathakal Daily | Kambikutan</title>
+        <meta head-key="description" name="description" content="Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy &amp; real-life kambi stories only on Kambikutan.">
+        <link head-key="canonical" rel="canonical" href="https://kambikutan.com/">
+        <meta head-key="og:title" property="og:title" content="Malayalam Kambi Stories – Kambikutan">
+        <meta head-key="og:description" property="og:description" content="Read latest kambikathakal in Malayalam. New stories updated daily.">
+        <meta head-key="og:image" property="og:image" content="https://kambikutan.com/cover.jpg">
+        <meta head-key="og:url" property="og:url" content="https://kambikutan.com/">
+        <meta head-key="og:type" property="og:type" content="website">
+        <meta head-key="twitter:title" name="twitter:title" content="Malayalam Kambi Stories – Kambikutan">
+        <meta head-key="twitter:description" name="twitter:description" content="Latest kambikathakal updated daily. Read now.">
+        <meta head-key="twitter:image" name="twitter:image" content="https://kambikutan.com/cover.jpg">
+    </Head>
     <PublicLayout>
         <div class="max-w-3xl mx-auto px-6">
 
@@ -119,7 +132,7 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 
 defineProps({
