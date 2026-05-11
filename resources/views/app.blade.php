@@ -9,12 +9,12 @@
             $post = $props['post'] ?? null;
 
             if ($component === 'Blog/Show' && $post) {
-                $metaTitle      = $post['title'] . ' – Malayalam erotic stories';
-                $metaDesc       = 'Read ' . ($post['title'] ?? '') . ' in Malayalam. A romantic and thrilling story series. Continue reading now.';
-                $metaKeywords   = ($post['title'] ?? '') . ', malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest';
+                $metaTitle      = str_replace("-", " ", $post['slug']) . ' – Malayalam erotic stories';
+                $metaDesc       = 'Read ' . str_replace("-", " ", $post['slug']) . ' in Malayalam. A romantic and thrilling story series. Continue reading now.';
+                $metaKeywords   = str_replace("-", " ", $post['slug']) . ', malayalam kambi stories, kambikathakal, kambikatha, malayalam stories, kambi kathakal latest';
                 $metaCanonical  = route('blog.show', $post['slug']);
                 $ogTitle        = $post['title'];
-                $ogDesc         = $post['description'] ?? '';
+                $ogDesc         = 'Read ' . str_replace("-", " ", $post['slug']) . ' in Malayalam. A romantic and thrilling story series. Continue reading now.';
                 $ogImage        = $post['cover_image_url'] ?? 'https://kambikutan.com/cover.jpg';
                 $ogUrl          = route('blog.show', $post['slug']);
                 $ogType         = 'article';
