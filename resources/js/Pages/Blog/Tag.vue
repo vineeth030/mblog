@@ -66,27 +66,8 @@
             </div>
 
             <!-- Pagination -->
-            <div
-                v-if="posts.last_page > 1"
-                class="py-8 flex items-center justify-between border-t border-gray-100 text-sm"
-            >
-                <Link
-                    v-if="posts.prev_page_url"
-                    :href="posts.prev_page_url"
-                    class="flex items-center gap-1 text-gray-500 hover:text-gray-900 transition"
-                >
-                    ← Newer
-                </Link>
-                <span v-else />
-                <span class="text-gray-400">{{ posts.current_page }} / {{ posts.last_page }}</span>
-                <Link
-                    v-if="posts.next_page_url"
-                    :href="posts.next_page_url"
-                    class="flex items-center gap-1 text-gray-500 hover:text-gray-900 transition"
-                >
-                    Older →
-                </Link>
-                <span v-else />
+            <div v-if="posts.last_page > 1" class="py-8 border-t border-gray-100">
+                <Pagination :paginator="posts" />
             </div>
 
         </div>
@@ -96,6 +77,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 defineProps({
     tag:   { type: Object, required: true },

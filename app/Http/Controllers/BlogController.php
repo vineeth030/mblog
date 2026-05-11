@@ -76,8 +76,15 @@ class BlogController extends Controller
                 'tags'            => $blogPost->tags->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug]),
             ],
             'pagination' => $totalPages > 1 ? [
-                'current_page' => $currentPage,
-                'total_pages'  => $totalPages,
+                'current_page'   => $currentPage,
+                'last_page'      => $totalPages,
+                'first_page_url' => route('blog.show', ['blogPost' => $blogPost->slug, 'page' => 1]),
+                'prev_page_url'  => $currentPage > 1
+                    ? route('blog.show', ['blogPost' => $blogPost->slug, 'page' => $currentPage - 1])
+                    : null,
+                'next_page_url'  => $currentPage < $totalPages
+                    ? route('blog.show', ['blogPost' => $blogPost->slug, 'page' => $currentPage + 1])
+                    : null,
             ] : null,
         ]);
     }

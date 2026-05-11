@@ -123,30 +123,8 @@
         </div>
 
         <!-- Pagination -->
-        <div
-            v-if="posts.last_page > 1"
-            class="mt-5 flex items-center justify-between text-sm text-gray-500"
-        >
-            <span>Showing {{ posts.from }}–{{ posts.to }} of {{ posts.total }}</span>
-            <div class="flex items-center gap-1">
-                <Link
-                    v-if="posts.prev_page_url"
-                    :href="posts.prev_page_url"
-                    class="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
-                >
-                    ← Prev
-                </Link>
-                <span class="px-3 py-1.5 text-gray-600">
-                    {{ posts.current_page }} / {{ posts.last_page }}
-                </span>
-                <Link
-                    v-if="posts.next_page_url"
-                    :href="posts.next_page_url"
-                    class="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
-                >
-                    Next →
-                </Link>
-            </div>
+        <div v-if="posts.last_page > 1" class="mt-5">
+            <Pagination :paginator="posts" show-meta preserve-scroll />
         </div>
 
     </AdminLayout>
@@ -155,6 +133,7 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Components/Admin/AdminLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 defineProps({
     posts: { type: Object, required: true },

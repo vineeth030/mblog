@@ -95,32 +95,8 @@
         </div>
 
         <!-- Pagination -->
-        <div
-            v-if="submissions.last_page > 1"
-            class="mt-5 flex items-center justify-between text-sm text-gray-500"
-        >
-            <span>Showing {{ submissions.from }}–{{ submissions.to }} of {{ submissions.total }}</span>
-            <div class="flex items-center gap-1">
-                <Link
-                    v-if="submissions.prev_page_url"
-                    :href="submissions.prev_page_url"
-                    preserve-scroll
-                    class="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
-                >
-                    ← Prev
-                </Link>
-                <span class="px-3 py-1.5 text-gray-600">
-                    {{ submissions.current_page }} / {{ submissions.last_page }}
-                </span>
-                <Link
-                    v-if="submissions.next_page_url"
-                    :href="submissions.next_page_url"
-                    preserve-scroll
-                    class="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
-                >
-                    Next →
-                </Link>
-            </div>
+        <div v-if="submissions.last_page > 1" class="mt-5">
+            <Pagination :paginator="submissions" show-meta preserve-scroll />
         </div>
 
     </AdminLayout>
@@ -131,6 +107,7 @@ import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Components/Admin/AdminLayout.vue';
 import StatusBadge from '@/Components/Admin/StatusBadge.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     submissions: { type: Object, required: true },
