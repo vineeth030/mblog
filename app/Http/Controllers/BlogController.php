@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -42,13 +41,8 @@ class BlogController extends Controller
                 'created_at'      => $post->created_at->format('M j, Y'),
             ]);
 
-        $categories = Category::whereHas('blogPosts', fn ($q) => $q->where('publish_status', true))
-            ->orderBy('name')
-            ->pluck('name');
-
         return Inertia::render('Blog/Index', [
             'posts'           => $posts,
-            'categories'      => $categories,
             'currentCategory' => $category,
         ]);
     }

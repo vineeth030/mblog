@@ -1,6 +1,6 @@
 <template>
     <PublicLayout>
-        <div class="max-w-3xl mx-auto px-6">
+        <div>
 
             <!-- Header -->
             <div class="py-12 border-b border-gray-100">

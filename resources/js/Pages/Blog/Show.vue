@@ -15,19 +15,21 @@
 
     <PublicLayout>
 
-        <!-- Hero image -->
-        <div
-            v-if="post.cover_image_url"
-            class="w-full bg-gray-100 max-h-[480px] overflow-hidden"
-        >
-            <img
-                :src="post.cover_image_url"
-                :alt="post.title"
-                class="w-full max-h-[480px] object-cover"
-            />
-        </div>
+        <!-- Hero image (full-width, above two-column grid) -->
+        <template #hero>
+            <div
+                v-if="post.cover_image_url"
+                class="w-full bg-gray-100 max-h-[480px] overflow-hidden"
+            >
+                <img
+                    :src="post.cover_image_url"
+                    :alt="post.title"
+                    class="w-full max-h-[480px] object-cover"
+                />
+            </div>
+        </template>
 
-        <div class="max-w-2xl mx-auto px-6">
+        <div class="max-w-2xl">
 
             <!-- Back link -->
             <div class="pt-8">

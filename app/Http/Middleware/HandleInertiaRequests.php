@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,6 +42,17 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
+            'publicCategories' => fn () => $request->is('admin*')
+                ? []
+                : Category::query()
+                    ->whereHas('blogPosts', fn ($q) => $q->where('publish_status', true))
+                    ->withCount(['blogPosts' => fn ($q) => $q->where('publish_status', true)])
+                    ->orderBy('name')
+                    ->get()
+                    ->map(fn (Category $c) => [
+                        'name'  => $c->name,
+                        'count' => $c->blog_posts_count,
+                    ]),
         ];
     }
 }

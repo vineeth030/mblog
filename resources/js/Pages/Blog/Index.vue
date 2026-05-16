@@ -13,36 +13,12 @@
         <meta head-key="twitter:image" name="twitter:image" content="https://kambikutan.com/cover.jpg">
     </Head>
     <PublicLayout>
-        <div class="max-w-3xl mx-auto px-6">
+        <div>
 
             <!-- Site intro -->
             <div class="py-12 border-b border-gray-100">
                 <h1 class="text-4xl font-bold tracking-tight">Stories worth reading.</h1>
                 <!--<p class="mt-2 text-gray-500">Ideas, tutorials, and thoughts on web development.</p>-->
-            </div>
-
-            <!-- Category filter -->
-            <div class="flex items-center gap-2 py-4 overflow-x-auto border-b border-gray-100 no-scrollbar">
-                <Link
-                    :href="route('blog.index')"
-                    class="shrink-0 px-4 py-1.5 rounded-full text-sm transition"
-                    :class="!currentCategory
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
-                >
-                    All
-                </Link>
-                <Link
-                    v-for="cat in categories"
-                    :key="cat"
-                    :href="route('blog.index', { category: cat })"
-                    class="shrink-0 px-4 py-1.5 rounded-full text-sm transition"
-                    :class="currentCategory === cat
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
-                >
-                    {{ cat }}
-                </Link>
             </div>
 
             <!-- Post list -->
@@ -119,12 +95,6 @@ import Pagination from '@/Components/Pagination.vue';
 
 defineProps({
     posts:           { type: Object,  required: true },
-    categories:      { type: Array,   default: () => [] },
     currentCategory: { type: String,  default: null },
 });
 </script>
-
-<style>
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
