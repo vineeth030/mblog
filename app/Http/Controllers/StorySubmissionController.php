@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStorySubmissionRequest;
+use App\Models\Category;
 use App\Models\StorySubmission;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -12,17 +13,27 @@ class StorySubmissionController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Stories/Submit');
+        $a = random_int(1, 9);
+        $b = random_int(1, 9);
+
+        session(['captcha_sum' => $a + $b]);
+
+        return Inertia::render('Stories/Submit', [
+            'categories' => Category::query()
+                ->orderBy('name')
+                ->get(['id', 'name']),
+            'captcha'    => ['a' => $a, 'b' => $b],
+        ]);
     }
 
     public function store(StoreStorySubmissionRequest $request): RedirectResponse
     {
         $data = $request->validated();
-
-        $data['pdf_file'] = $request->file('pdf_file')
-            ->store('story-submissions', 'public');
+        unset($data['captcha_answer']);
 
         StorySubmission::create($data);
+
+        $request->session()->forget('captcha_sum');
 
         return redirect()
             ->route('stories.submit')

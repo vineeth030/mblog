@@ -33,8 +33,30 @@
                         </dd>
                     </div>
                     <div>
+                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Category</dt>
+                        <dd class="mt-1 text-gray-700">
+                            <span v-if="submission.category">{{ submission.category }}</span>
+                            <span v-else class="text-gray-400">—</span>
+                        </dd>
+                    </div>
+                    <div>
                         <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Current status</dt>
                         <dd class="mt-1"><StatusBadge :status="submission.status" /></dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tags</dt>
+                        <dd class="mt-1">
+                            <div v-if="tagList.length" class="flex flex-wrap gap-1.5">
+                                <span
+                                    v-for="tag in tagList"
+                                    :key="tag"
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700"
+                                >
+                                    {{ tag }}
+                                </span>
+                            </div>
+                            <span v-else class="text-gray-400">—</span>
+                        </dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Submitted</dt>
@@ -45,31 +67,13 @@
                         <dd class="mt-1 text-gray-700">{{ submission.updated_at }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">PDF</dt>
-                        <dd class="flex flex-wrap items-center gap-3">
-                            <a
-                                v-if="submission.pdf_url"
-                                :href="submission.pdf_url"
-                                target="_blank"
-                                rel="noopener"
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm text-gray-700 transition"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                                View PDF
-                            </a>
-                            <a
-                                :href="route('admin.story-submissions.download', submission.id)"
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 hover:bg-gray-800 text-sm text-white transition"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/>
-                                </svg>
-                                Download
-                            </a>
+                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Story</dt>
+                        <dd>
+                            <pre
+                                v-if="submission.story_content"
+                                class="whitespace-pre-wrap break-words font-sans text-sm text-gray-800 leading-relaxed bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-[32rem] overflow-y-auto"
+                            >{{ submission.story_content }}</pre>
+                            <span v-else class="text-gray-400">—</span>
                         </dd>
                     </div>
                 </dl>
@@ -112,6 +116,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Components/Admin/AdminLayout.vue';
 import StatusBadge from '@/Components/Admin/StatusBadge.vue';
@@ -122,6 +127,13 @@ const props = defineProps({
 });
 
 const statusForm = useForm({ status: props.submission.status });
+
+const tagList = computed(() =>
+    (props.submission.tags || '')
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean)
+);
 
 const DOTS = {
     pending:  'bg-amber-500',

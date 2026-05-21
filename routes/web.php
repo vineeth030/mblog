@@ -45,6 +45,4 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
         ->only(['index', 'show', 'destroy']);
     Route::patch('story-submissions/{storySubmission}/status', [AdminStorySubmissionController::class, 'updateStatus'])
         ->name('story-submissions.status');
-    Route::get('story-submissions/{storySubmission}/download', [AdminStorySubmissionController::class, 'download'])
-        ->name('story-submissions.download');
 });

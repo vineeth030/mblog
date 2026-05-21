@@ -8,7 +8,7 @@
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Submit Your Story</h1>
                 <p class="mt-2 text-sm text-gray-500">
-                    Share your Malayalam story with us. Upload your manuscript as a PDF and we'll review it.
+                    Share your Malayalam story with us. Write it below and we'll review it.
                 </p>
             </div>
 
@@ -56,41 +56,54 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Story PDF</label>
-                        <label
-                            class="flex flex-col items-center justify-center w-full px-4 py-8 rounded-lg border-2 border-dashed cursor-pointer transition"
-                            :class="form.errors.pdf_file
-                                ? 'border-red-300 bg-red-50 hover:bg-red-100'
-                                : 'border-gray-300 bg-gray-50 hover:bg-gray-100'"
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select
+                            v-model="form.category_id"
+                            :class="[inp, form.errors.category_id && inpErr]"
                         >
-                            <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                            </svg>
-                            <span v-if="!form.pdf_file" class="text-sm text-gray-500">
-                                <span class="font-medium text-indigo-600">Click to upload</span> a PDF file
-                            </span>
-                            <span v-else class="text-sm text-gray-700 font-medium truncate max-w-full">
-                                {{ form.pdf_file.name }}
-                            </span>
-                            <span v-if="form.pdf_file" class="text-xs text-gray-400 mt-1">
-                                {{ formatSize(form.pdf_file.size) }} — click to change
-                            </span>
-                            <span v-else class="text-xs text-gray-400 mt-1">PDF only · max 10 MB</span>
-                            <input
-                                type="file"
-                                accept="application/pdf,.pdf"
-                                class="hidden"
-                                @change="onFileChange"
-                            />
+                            <option value="" disabled>Select a category</option>
+                            <option v-for="category in categories" :key="category.id" :value="category.id">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                        <p v-if="form.errors.category_id" class="mt-1 text-xs text-red-600">{{ form.errors.category_id }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                        <input
+                            v-model="form.tags"
+                            type="text"
+                            placeholder="e.g. അവിഹിതം, കൗമാരം, ചീറ്റിംഗ്"
+                            :class="[inp, form.errors.tags && inpErr]"
+                        />
+                        <p class="mt-1 text-xs text-gray-400">Separate tags with commas.</p>
+                        <p v-if="form.errors.tags" class="mt-1 text-xs text-red-600">{{ form.errors.tags }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Story</label>
+                        <TextEditor
+                            v-model="form.story_content"
+                            :has-error="!!form.errors.story_content"
+                            placeholder="Write your story here… (Markdown supported)"
+                        />
+                        <p v-if="form.errors.story_content" class="mt-1 text-xs text-red-600">{{ form.errors.story_content }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            What is {{ captcha.a }} + {{ captcha.b }}?
                         </label>
-                        <div v-if="form.progress" class="mt-2 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                            <div
-                                class="bg-indigo-500 h-full transition-all"
-                                :style="{ width: form.progress.percentage + '%' }"
-                            />
-                        </div>
-                        <p v-if="form.errors.pdf_file" class="mt-1 text-xs text-red-600">{{ form.errors.pdf_file }}</p>
+                        <input
+                            v-model="form.captcha_answer"
+                            type="number"
+                            inputmode="numeric"
+                            placeholder="Your answer"
+                            :class="[inp, 'sm:max-w-xs', form.errors.captcha_answer && inpErr]"
+                        />
+                        <p class="mt-1 text-xs text-gray-400">A quick math check to keep out spam.</p>
+                        <p v-if="form.errors.captcha_answer" class="mt-1 text-xs text-red-600">{{ form.errors.captcha_answer }}</p>
                     </div>
 
                     <div class="pt-2">
@@ -118,35 +131,36 @@
 
 <script setup>
 import { computed } from 'vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
+import TextEditor   from '@/Components/Admin/TextEditor.vue';
+
+const props = defineProps({
+    categories: { type: Array,  required: true },
+    captcha:    { type: Object, required: true },
+});
 
 const page  = usePage();
 const flash = computed(() => page.props.flash);
 
 const form = useForm({
-    title:    '',
-    email:    '',
-    pdf_file: null,
+    title:          '',
+    email:          '',
+    category_id:    '',
+    tags:           '',
+    story_content:  '',
+    captcha_answer: '',
 });
 
 const inp    = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition';
 const inpErr = 'border-red-400 focus:ring-red-400 focus:border-red-400';
 
-function onFileChange(e) {
-    form.pdf_file = e.target.files?.[0] ?? null;
-}
-
-function formatSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
 function submit() {
     form.post(route('stories.submit.store'), {
-        forceFormData: true,
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            router.reload({ only: ['captcha'] });
+        },
     });
 }
 </script>

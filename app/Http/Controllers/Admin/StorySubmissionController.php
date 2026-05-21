@@ -7,8 +7,6 @@ use App\Http\Requests\UpdateStorySubmissionStatusRequest;
 use App\Models\StorySubmission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,6 +18,7 @@ class StorySubmissionController extends Controller
         $status = $request->input('status');
 
         $submissions = StorySubmission::query()
+            ->with('category:id,name')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
@@ -34,6 +33,8 @@ class StorySubmissionController extends Controller
                 'id'         => $s->id,
                 'title'      => $s->title,
                 'email'      => $s->email,
+                'category'   => $s->category?->name,
+                'tags'       => $s->tags,
                 'status'     => $s->status,
                 'created_at' => $s->created_at->toDateTimeString(),
             ]);
@@ -50,15 +51,19 @@ class StorySubmissionController extends Controller
 
     public function show(StorySubmission $storySubmission): Response
     {
+        $storySubmission->load('category:id,name');
+
         return Inertia::render('Admin/StorySubmissions/Show', [
             'submission' => [
-                'id'         => $storySubmission->id,
-                'title'      => $storySubmission->title,
-                'email'      => $storySubmission->email,
-                'status'     => $storySubmission->status,
-                'pdf_url'    => $storySubmission->pdf_url,
-                'created_at' => $storySubmission->created_at->toDateTimeString(),
-                'updated_at' => $storySubmission->updated_at->toDateTimeString(),
+                'id'            => $storySubmission->id,
+                'title'         => $storySubmission->title,
+                'email'         => $storySubmission->email,
+                'category'      => $storySubmission->category?->name,
+                'tags'          => $storySubmission->tags,
+                'story_content' => $storySubmission->story_content,
+                'status'        => $storySubmission->status,
+                'created_at'    => $storySubmission->created_at->toDateTimeString(),
+                'updated_at'    => $storySubmission->updated_at->toDateTimeString(),
             ],
             'statuses' => StorySubmission::STATUSES,
         ]);
@@ -73,21 +78,8 @@ class StorySubmissionController extends Controller
         return back()->with('success', 'Submission status updated.');
     }
 
-    public function download(StorySubmission $storySubmission): StreamedResponse
-    {
-        abort_unless($storySubmission->pdf_file && Storage::disk('public')->exists($storySubmission->pdf_file), 404);
-
-        $filename = sprintf(
-            '%s.pdf',
-            \Illuminate\Support\Str::slug($storySubmission->title) ?: 'story-submission-'.$storySubmission->id
-        );
-
-        return Storage::disk('public')->download($storySubmission->pdf_file, $filename);
-    }
-
     public function destroy(StorySubmission $storySubmission): RedirectResponse
     {
-        $storySubmission->deletePdfFile();
         $storySubmission->delete();
 
         return redirect()

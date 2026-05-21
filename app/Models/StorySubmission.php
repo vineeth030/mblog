@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'title',
     'email',
-    'pdf_file',
+    'category_id',
+    'tags',
+    'story_content',
     'status',
 ])]
 class StorySubmission extends Model
@@ -24,17 +26,8 @@ class StorySubmission extends Model
         self::STATUS_REJECTED,
     ];
 
-    /** Public URL for the stored PDF, or null. */
-    public function getPdfUrlAttribute(): ?string
+    public function category(): BelongsTo
     {
-        return $this->pdf_file ? Storage::url($this->pdf_file) : null;
-    }
-
-    /** Delete the stored PDF file from disk. */
-    public function deletePdfFile(): void
-    {
-        if ($this->pdf_file) {
-            Storage::delete($this->pdf_file);
-        }
+        return $this->belongsTo(Category::class);
     }
 }

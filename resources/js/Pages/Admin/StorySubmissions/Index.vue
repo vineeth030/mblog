@@ -52,6 +52,8 @@
                     <tr class="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                         <th class="px-4 py-3">Title</th>
                         <th class="px-4 py-3 hidden md:table-cell">Email</th>
+                        <th class="px-4 py-3 hidden md:table-cell">Category</th>
+                        <th class="px-4 py-3 hidden xl:table-cell">Tags</th>
                         <th class="px-4 py-3">Status</th>
                         <th class="px-4 py-3 hidden lg:table-cell">Submitted</th>
                         <th class="px-4 py-3 text-right">Actions</th>
@@ -66,8 +68,27 @@
                         <td class="px-4 py-3 font-medium text-gray-900 max-w-xs">
                             <p class="line-clamp-1">{{ submission.title }}</p>
                             <p class="md:hidden text-xs text-gray-400 mt-0.5">{{ submission.email }}</p>
+                            <p v-if="submission.category" class="md:hidden text-xs text-gray-400 mt-0.5">
+                                {{ submission.category }}
+                            </p>
                         </td>
                         <td class="px-4 py-3 hidden md:table-cell text-gray-500">{{ submission.email }}</td>
+                        <td class="px-4 py-3 hidden md:table-cell text-gray-500">
+                            <span v-if="submission.category">{{ submission.category }}</span>
+                            <span v-else class="text-gray-300">—</span>
+                        </td>
+                        <td class="px-4 py-3 hidden xl:table-cell">
+                            <div v-if="parseTags(submission.tags).length" class="flex flex-wrap gap-1">
+                                <span
+                                    v-for="tag in parseTags(submission.tags)"
+                                    :key="tag"
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600"
+                                >
+                                    {{ tag }}
+                                </span>
+                            </div>
+                            <span v-else class="text-gray-300 text-xs">—</span>
+                        </td>
                         <td class="px-4 py-3">
                             <StatusBadge :status="submission.status" />
                         </td>
@@ -144,5 +165,10 @@ function deleteSubmission(submission) {
 
 function formatStatus(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function parseTags(tags) {
+    if (!tags) return [];
+    return tags.split(',').map(t => t.trim()).filter(Boolean);
 }
 </script>
