@@ -10,6 +10,13 @@
                 <p class="mt-2 text-sm text-gray-500">
                     Share your Malayalam story with us. Write it below and we'll review it.
                 </p>
+                <h2 class="mt-5">Instructions for submiting stories:</h2>
+                <p class="mt-2 text-sm text-gray-500">- മലയാളം ഫോണ്ടില്‍ എഴുതിയ കഥകള്‍ മാത്രമേ പ്രസിധികരിക്കുകയുള്ളു.</p>
+                <p class="mt-2 text-sm text-gray-500">- മന്ഗ്ലിഷില്‍ എഴുതിയ കഥകള്‍ പ്രസിധികരിക്കുന്നതല്ല.</p>
+                <p class="mt-2 text-sm text-gray-500">- 18 വയസ്സില്‍ താഴെ കഥാപാത്രങ്ങള്‍, മതം, രാഷ്ട്രീയം, വ്യക്തിഹത്യ, ബലാൽസംഗം എന്നിവ വിഷയമായി വരുന്ന കഥകള്‍ ദയവായി അയക്കരുത് പ്രസിദ്ധീകരിക്കുന്നതല്ല.</p>
+                <p class="mt-2 text-sm text-gray-500">- പ്രസിദ്ധീകരിക്കാൻ കുറഞ്ഞത് 3 പേജുകൾ ആവശ്യമാണ് (200 words).</p>
+                <p class="mt-2 text-sm text-gray-500">- ദയവായി കമ്പികഥകൾ മാത്രം അയക്കുക. കമ്പി ഇല്ലാത്ത കഥകൾ അയക്കരുത് പ്രസിദ്ധികരിക്കുന്നതല്ല.</p>
+                <p class="mt-2 text-sm text-gray-500">- മലയാളം ടൈപ്പ് ചെയ്യാന്‍ : <a href="https://www.google.com/intl/ml/inputtools/try/">ഇവിടെ ക്ലിക്ക് ചെയ്യുക</a> </p>
             </div>
 
             <!-- Success message -->
