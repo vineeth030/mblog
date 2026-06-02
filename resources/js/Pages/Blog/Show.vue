@@ -93,6 +93,7 @@
 
             <!-- Content -->
             <div
+                ref="contentEl"
                 class="prose prose-gray prose-lg max-w-none
                        prose-headings:font-bold prose-headings:tracking-tight
                        prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline
@@ -125,7 +126,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -140,4 +141,33 @@ const seoDescription = computed(
     () => `Read ${props.post.description} in Malayalam. A romantic and thrilling story series. Continue reading now.`,
 );
 const canonicalUrl = computed(() => route('blog.show', props.post.slug));
+
+// ── Copy-trap: append source attribution to anything copied from the story ──
+// Invisible to readers; only rewrites clipboard contents at copy time.
+const contentEl = ref(null);
+
+function handleCopy(e) {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed) return;
+
+    // Only act when the selection actually lives inside the story content.
+    if (!contentEl.value || !contentEl.value.contains(selection.anchorNode)) return;
+
+    const selectedText = selection.toString();
+    if (!selectedText.trim()) return;
+
+    const url = canonicalUrl.value;
+    const textNote = `\n\n— Source: ${url} © kambikutan.com`;
+    const htmlNote = `<br><br>— Source: <a href="${url}">${url}</a> © kambikutan.com`;
+
+    e.clipboardData.setData('text/plain', selectedText + textNote);
+    e.clipboardData.setData(
+        'text/html',
+        `${selectedText.replace(/\n/g, '<br>')}${htmlNote}`,
+    );
+    e.preventDefault();
+}
+
+onMounted(() => document.addEventListener('copy', handleCopy));
+onBeforeUnmount(() => document.removeEventListener('copy', handleCopy));
 </script>

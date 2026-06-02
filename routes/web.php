@@ -10,12 +10,18 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StorySubmissionController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 // ── Public blog ────────────────────────────────────────────
 Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// ── Contact ────────────────────────────────────────────────
+Route::get('/contact', fn () => Inertia::render('Contact', [
+    'email' => 'kambikutan@gmail.com',
+]))->name('contact');
 
 // ── Public story submission ────────────────────────────────
 Route::get('/submit-story', [StorySubmissionController::class, 'create'])->name('stories.submit');

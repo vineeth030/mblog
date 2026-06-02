@@ -7,12 +7,20 @@
                 <Link :href="route('blog.index')" class="font-bold text-xl tracking-tight hover:opacity-70 transition">
                     kambikutan.com
                 </Link>
-                <Link
-                    :href="route('stories.submit')"
-                    class="text-xs text-gray-400 hover:text-gray-700 transition"
-                >
-                    Submit Story →
-                </Link>
+                <nav class="flex items-center gap-4">
+                    <Link
+                        :href="route('contact')"
+                        class="text-xs text-gray-400 hover:text-gray-700 transition"
+                    >
+                        Contact
+                    </Link>
+                    <Link
+                        :href="route('stories.submit')"
+                        class="text-xs text-gray-400 hover:text-gray-700 transition"
+                    >
+                        Submit Story →
+                    </Link>
+                </nav>
             </div>
         </header>
 
