@@ -15,6 +15,13 @@
                             Posts
                         </Link>
                         <Link
+                            :href="route('admin.editorial-posts.index')"
+                            class="text-sm transition"
+                            :class="isActive('admin.editorial-posts') ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'"
+                        >
+                            Editorial
+                        </Link>
+                        <Link
                             :href="route('admin.categories.index')"
                             class="text-sm transition"
                             :class="isActive('admin.categories') ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'"

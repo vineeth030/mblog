@@ -3,9 +3,11 @@
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\EditorialPostController;
 use App\Http\Controllers\Admin\StorySubmissionController as AdminStorySubmissionController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\EditorialController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StorySubmissionController;
 use App\Http\Controllers\TagController;
@@ -23,6 +25,10 @@ Route::get('/contact', fn () => Inertia::render('Contact', [
     'email' => 'kambikutan@gmail.com',
 ]))->name('contact');
 
+// ── Public editorial ───────────────────────────────────────
+Route::get('/editorial', [EditorialController::class, 'index'])->name('editorial.index');
+Route::get('/editorial/{editorialPost}', [EditorialController::class, 'show'])->name('editorial.show');
+
 // ── Public story submission ────────────────────────────────
 Route::get('/submit-story', [StorySubmissionController::class, 'create'])->name('stories.submit');
 Route::post('/submit-story', [StorySubmissionController::class, 'store'])->name('stories.submit.store');
@@ -39,6 +45,9 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::get('dashboard', fn () => redirect()->route('admin.blog-posts.index'))->name('dashboard');
 
     Route::resource('blog-posts', BlogPostController::class)
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::resource('editorial-posts', EditorialPostController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
     Route::resource('categories', CategoryController::class)
