@@ -69,8 +69,13 @@
                         {{ post.author_name.charAt(0).toUpperCase() }}
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-gray-900">{{ post.author_name }}</p>
-                        <time class="text-xs text-gray-400">{{ post.created_at }}</time>
+                        <Link
+                            v-if="post.author_slug"
+                            :href="route('author.show', post.author_slug)"
+                            class="text-sm font-semibold text-gray-900 hover:text-indigo-600 transition"
+                        >{{ post.author_name }}</Link>
+                        <p v-else class="text-sm font-semibold text-gray-900">{{ post.author_name }}</p>
+                        <time class="block text-xs text-gray-400">{{ post.created_at }}</time>
                     </div>
                 </div>
             </header>

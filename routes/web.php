@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\EditorialPostController;
 use App\Http\Controllers\Admin\StorySubmissionController as AdminStorySubmissionController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AuthorController as PublicAuthorController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\EditorialController;
 use App\Http\Controllers\SitemapController;
@@ -18,6 +19,7 @@ use Inertia\Inertia;
 Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
+Route::get('/authors/{author:slug}', [PublicAuthorController::class, 'show'])->name('author.show');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // ── Contact ────────────────────────────────────────────────

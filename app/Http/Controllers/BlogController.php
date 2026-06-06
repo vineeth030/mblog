@@ -37,6 +37,7 @@ class BlogController extends Controller
                 'description'     => $post->description,
                 'category'        => $post->category?->name,
                 'author_name'     => $post->author?->name,
+                'author_slug'     => $post->author?->slug,
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
             ]);
@@ -64,6 +65,7 @@ class BlogController extends Controller
                 'description'     => $blogPost->description,
                 'category'        => $blogPost->category?->name,
                 'author_name'     => $blogPost->author?->name,
+                'author_slug'     => $blogPost->author?->slug,
                 'cover_image_url' => $blogPost->cover_image_url,
                 'content_html'    => (string) $this->md->convert($pages[$currentPage - 1]),
                 'created_at'      => $blogPost->created_at->format('M j, Y'),

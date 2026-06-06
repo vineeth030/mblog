@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
+use App\Models\Author;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class TagController extends Controller
+class AuthorController extends Controller
 {
-    public function show(Tag $tag): Response
+    public function show(Author $author): Response
     {
-        $posts = $tag->blogPosts()
+        $posts = $author->blogPosts()
             ->with(['category', 'author'])
             ->where('publish_status', true)
             ->latest()
@@ -27,9 +27,9 @@ class TagController extends Controller
                 'created_at'      => $post->created_at->format('M j, Y'),
             ]);
 
-        return Inertia::render('Blog/Tag', [
-            'tag'   => ['name' => $tag->name, 'slug' => $tag->slug],
-            'posts' => $posts,
+        return Inertia::render('Blog/Author', [
+            'author' => ['name' => $author->name, 'slug' => $author->slug, 'bio' => $author->bio],
+            'posts'  => $posts,
         ]);
     }
 }

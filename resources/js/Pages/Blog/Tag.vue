@@ -33,7 +33,12 @@
                             </p>
                         </Link>
                         <div class="mt-4 flex items-center gap-2 text-xs text-gray-400">
-                            <span class="font-medium text-gray-600">{{ post.author_name }}</span>
+                            <Link
+                                v-if="post.author_slug"
+                                :href="route('author.show', post.author_slug)"
+                                class="font-medium text-gray-600 hover:text-indigo-600 transition"
+                            >{{ post.author_name }}</Link>
+                            <span v-else class="font-medium text-gray-600">{{ post.author_name }}</span>
                             <span>·</span>
                             <time>{{ post.created_at }}</time>
                         </div>

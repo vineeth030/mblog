@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
             'password' => 'Admin#123',
         ]);
 
-        $this->call(BlogPostSeeder::class);
+        $this->call([
+            BlogPostSeeder::class,
+            StorySeeder::class,
+        ]);
     }
 }

@@ -1,24 +1,14 @@
 <template>
-    <Head>
-        <title>Malayalam Kambi Stories – Latest Kambikathakal Daily | Kambikutan</title>
-        <meta head-key="description" name="description" content="Read the latest Malayalam kambikathakal with new stories added daily. Explore romance, fantasy &amp; real-life kambi stories only on Kambikutan.">
-        <link head-key="canonical" rel="canonical" href="https://kambikutan.com/">
-        <meta head-key="og:title" property="og:title" content="Malayalam Kambi Stories – Kambikutan">
-        <meta head-key="og:description" property="og:description" content="Read latest kambikathakal in Malayalam. New stories updated daily.">
-        <meta head-key="og:image" property="og:image" content="https://kambikutan.com/cover.jpg">
-        <meta head-key="og:url" property="og:url" content="https://kambikutan.com/">
-        <meta head-key="og:type" property="og:type" content="website">
-        <meta head-key="twitter:title" name="twitter:title" content="Malayalam Kambi Stories – Kambikutan">
-        <meta head-key="twitter:description" name="twitter:description" content="Latest kambikathakal updated daily. Read now.">
-        <meta head-key="twitter:image" name="twitter:image" content="https://kambikutan.com/cover.jpg">
-    </Head>
     <PublicLayout>
         <div>
 
-            <!-- Site intro -->
+            <!-- Header -->
             <div class="py-12 border-b border-gray-100">
-                <h1 class="text-4xl font-bold tracking-tight">Stories worth reading.</h1>
-                <!--<p class="mt-2 text-gray-500">Ideas, tutorials, and thoughts on web development.</p>-->
+                <p class="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-2">Author</p>
+                <h1 class="text-4xl font-bold tracking-tight">{{ author.name }}</h1>
+                <p v-if="author.bio" class="mt-3 text-gray-500 leading-relaxed max-w-2xl">
+                    {{ author.bio }}
+                </p>
             </div>
 
             <!-- Post list -->
@@ -46,12 +36,7 @@
                             </p>
                         </Link>
                         <div class="mt-4 flex items-center gap-2 text-xs text-gray-400">
-                            <Link
-                                v-if="post.author_slug"
-                                :href="route('author.show', post.author_slug)"
-                                class="font-medium text-gray-600 hover:text-indigo-600 transition"
-                            >{{ post.author_name }}</Link>
-                            <span v-else class="font-medium text-gray-600">{{ post.author_name }}</span>
+                            <span class="font-medium text-gray-600">{{ post.author_name }}</span>
                             <span>·</span>
                             <time>{{ post.created_at }}</time>
                         </div>
@@ -74,13 +59,12 @@
 
             <!-- Empty state -->
             <div v-else class="py-24 text-center">
-                <p class="text-gray-400 text-lg">No posts found.</p>
+                <p class="text-gray-400 text-lg">No posts found for this author.</p>
                 <Link
-                    v-if="currentCategory"
                     :href="route('blog.index')"
                     class="mt-3 inline-block text-sm text-indigo-600 hover:text-indigo-800 transition"
                 >
-                    ← Clear filter
+                    ← Browse all posts
                 </Link>
             </div>
 
@@ -94,12 +78,12 @@
 </template>
 
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 
 defineProps({
-    posts:           { type: Object,  required: true },
-    currentCategory: { type: String,  default: null },
+    author: { type: Object, required: true },
+    posts:  { type: Object, required: true },
 });
 </script>
