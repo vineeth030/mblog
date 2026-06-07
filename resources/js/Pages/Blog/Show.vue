@@ -18,7 +18,7 @@
         <!-- Hero image (full-width, above two-column grid) -->
         <template #hero>
             <div
-                v-if="post.cover_image_url"
+                v-if="post.cover_image_url && !isReadingMode"
                 class="w-full bg-gray-100 max-h-[480px] overflow-hidden"
             >
                 <img
@@ -29,13 +29,35 @@
             </div>
         </template>
 
-        <div class="max-w-2xl">
+        <div :class="isReadingMode ? 'max-w-[760px] mx-auto' : 'max-w-2xl'">
+
+            <!-- Reading-mode toggle: fixed so it stays reachable in both modes -->
+            <button
+                type="button"
+                @click="toggle"
+                :aria-pressed="isReadingMode"
+                aria-label="Toggle reading mode"
+                class="fixed top-4 right-4 z-50 inline-flex items-center gap-2 rounded-full border
+                       px-4 py-2 text-sm font-medium shadow-sm
+                       transition-colors duration-300 motion-reduce:transition-none
+                       focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
+                :class="isReadingMode
+                    ? 'bg-white/10 border-white/20 text-[#e5e5e5] hover:bg-white/20 focus-visible:ring-offset-[#111111]'
+                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <span>{{ isReadingMode ? 'Exit reading mode' : 'Reading mode' }}</span>
+            </button>
 
             <!-- Back link -->
             <div class="pt-8">
                 <Link
                     :href="route('blog.index')"
-                    class="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-700 transition"
+                    class="inline-flex items-center gap-1 text-sm text-gray-400 transition"
+                    :class="isReadingMode ? 'hover:text-white' : 'hover:text-gray-700'"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -54,7 +76,10 @@
                     {{ post.category }}
                 </Link>
 
-                <h1 class="mt-3 text-4xl font-bold leading-tight tracking-tight text-gray-900">
+                <h1
+                    class="mt-3 text-4xl font-bold leading-tight tracking-tight transition-colors duration-300 motion-reduce:transition-none"
+                    :class="isReadingMode ? 'text-white' : 'text-gray-900'"
+                >
                     {{ post.title }}
                 </h1>
 
@@ -72,9 +97,14 @@
                         <Link
                             v-if="post.author_slug"
                             :href="route('author.show', post.author_slug)"
-                            class="text-sm font-semibold text-gray-900 hover:text-indigo-600 transition"
+                            class="text-sm font-semibold transition hover:text-indigo-600"
+                            :class="isReadingMode ? 'text-white' : 'text-gray-900'"
                         >{{ post.author_name }}</Link>
-                        <p v-else class="text-sm font-semibold text-gray-900">{{ post.author_name }}</p>
+                        <p
+                            v-else
+                            class="text-sm font-semibold"
+                            :class="isReadingMode ? 'text-white' : 'text-gray-900'"
+                        >{{ post.author_name }}</p>
                         <time class="block text-xs text-gray-400">{{ post.created_at }}</time>
                     </div>
                 </div>
@@ -94,33 +124,46 @@
             </div>
 
             <!-- Divider -->
-            <hr class="my-8 border-gray-200" />
+            <hr
+                class="my-8 transition-colors duration-300 motion-reduce:transition-none"
+                :class="isReadingMode ? 'border-white/10' : 'border-gray-200'"
+            />
 
-            <!-- Content -->
+            <!-- Content — always rendered in the DOM (SEO-safe); reading mode only
+                 restyles it via prose-invert + larger type + looser leading. -->
             <div
                 ref="contentEl"
-                class="prose prose-gray prose-lg max-w-none
+                class="prose prose-gray max-w-none
                        prose-headings:font-bold prose-headings:tracking-tight
                        prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline
                        prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto
-                       prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5
+                       prose-code:px-1.5 prose-code:py-0.5
                        prose-code:rounded prose-code:text-sm prose-code:font-normal
                        prose-pre:bg-gray-950 prose-pre:text-gray-100
                        prose-blockquote:border-l-4 prose-blockquote:border-indigo-300
-                       prose-blockquote:not-italic prose-blockquote:text-gray-600"
+                       prose-blockquote:not-italic
+                       transition-colors duration-300 motion-reduce:transition-none"
+                :class="isReadingMode
+                    ? 'prose-invert prose-xl !leading-loose prose-code:bg-white/10'
+                    : 'prose-lg prose-code:bg-gray-100 prose-blockquote:text-gray-600'"
                 v-html="post.content_html"
             />
 
-            <!-- Pagination -->
-            <div v-if="pagination" class="mt-12 border-t border-gray-100 pt-8">
+            <!-- Pagination — hidden in reading mode (closest thing to a
+                 "related/next posts" distraction on this page). -->
+            <div v-if="pagination && !isReadingMode" class="mt-12 border-t border-gray-100 pt-8">
                 <Pagination :paginator="pagination" />
             </div>
 
             <!-- Footer -->
-            <footer class="mt-16 py-8 border-t border-gray-100">
+            <footer
+                class="mt-16 py-8 border-t transition-colors duration-300 motion-reduce:transition-none"
+                :class="isReadingMode ? 'border-white/10' : 'border-gray-100'"
+            >
                 <Link
                     :href="route('blog.index')"
-                    class="text-sm text-gray-400 hover:text-gray-900 transition"
+                    class="text-sm text-gray-400 transition"
+                    :class="isReadingMode ? 'hover:text-white' : 'hover:text-gray-900'"
                 >
                     ← Back to all posts
                 </Link>
@@ -135,11 +178,19 @@ import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
+import { useReadingMode } from '@/composables/useReadingMode';
 
 const props = defineProps({
     post:       { type: Object, required: true },
     pagination: { type: Object, default: null },
 });
+
+// ── Reading mode ──────────────────────────────────────────────────────────
+const { isReadingMode, toggle, restore, disable, deactivate } = useReadingMode();
+
+function handleReadingModeKeys(e) {
+    if (e.key === 'Escape' && isReadingMode.value) disable();
+}
 
 const seoTitle = computed(() => `${props.post.title} – Malayalam erotic stories`);
 const seoDescription = computed(
@@ -173,6 +224,17 @@ function handleCopy(e) {
     e.preventDefault();
 }
 
-onMounted(() => document.addEventListener('copy', handleCopy));
-onBeforeUnmount(() => document.removeEventListener('copy', handleCopy));
+onMounted(() => {
+    restore(); // re-apply the saved preference on (re)load of an article
+    document.addEventListener('copy', handleCopy);
+    document.addEventListener('keydown', handleReadingModeKeys);
+});
+
+onBeforeUnmount(() => {
+    // Drop the active state (without clearing the saved preference) so reading
+    // mode doesn't bleed onto the index/contact pages when navigating away.
+    deactivate();
+    document.removeEventListener('copy', handleCopy);
+    document.removeEventListener('keydown', handleReadingModeKeys);
+});
 </script>
