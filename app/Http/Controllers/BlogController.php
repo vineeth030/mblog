@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
 use App\Services\PostViewService;
+use App\Support\Breadcrumbs;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -44,9 +45,19 @@ class BlogController extends Controller
                 'views'           => $post->views,
             ]);
 
+        // Breadcrumbs only when a category filter is active; the bare home page
+        // gets none (best practice — don't show a single "Home" crumb).
+        $breadcrumbs = $category
+            ? Breadcrumbs::make()
+                ->push('Home', route('blog.index'))
+                ->push($category, route('blog.index', ['category' => $category]))
+                ->toArray()
+            : null;
+
         return Inertia::render('Blog/Index', [
             'posts'           => $posts,
             'currentCategory' => $category,
+            'breadcrumbs'     => $breadcrumbs,
         ]);
     }
 
@@ -63,7 +74,18 @@ class BlogController extends Controller
 
         $blogPost->loadMissing('tags');
 
+        $breadcrumbs = Breadcrumbs::make()->push('Home', route('blog.index'));
+        if ($blogPost->category) {
+            $breadcrumbs->push(
+                $blogPost->category->name,
+                route('blog.index', ['category' => $blogPost->category->name]),
+            );
+        }
+        // Current page: same URL as the canonical tag so the signals agree.
+        $breadcrumbs->push($blogPost->title, route('blog.show', $blogPost->slug));
+
         return Inertia::render('Blog/Show', [
+            'breadcrumbs' => $breadcrumbs->toArray(),
             'post' => [
                 'slug'            => $blogPost->slug,
                 'title'           => $blogPost->title,

@@ -52,18 +52,9 @@
                 <span>{{ isReadingMode ? 'Exit reading mode' : 'Reading mode' }}</span>
             </button>
 
-            <!-- Back link -->
+            <!-- Breadcrumbs (visible trail + Schema.org JSON-LD) -->
             <div class="pt-8">
-                <Link
-                    :href="route('blog.index')"
-                    class="inline-flex items-center gap-1 text-sm text-gray-400 transition"
-                    :class="isReadingMode ? 'hover:text-white' : 'hover:text-gray-700'"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                    All posts
-                </Link>
+                <Breadcrumbs :items="breadcrumbs" />
             </div>
 
             <!-- Post header -->
@@ -183,11 +174,13 @@ import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ViewCount from '@/Components/ViewCount.vue';
+import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
 
 const props = defineProps({
-    post:       { type: Object, required: true },
-    pagination: { type: Object, default: null },
+    post:        { type: Object, required: true },
+    pagination:  { type: Object, default: null },
+    breadcrumbs: { type: Array,  default: () => [] },
 });
 
 // ── Reading mode ──────────────────────────────────────────────────────────

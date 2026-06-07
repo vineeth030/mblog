@@ -15,6 +15,11 @@
     <PublicLayout>
         <div>
 
+            <!-- Breadcrumbs (only on category-filtered listings) -->
+            <div v-if="breadcrumbs" class="pt-8">
+                <Breadcrumbs :items="breadcrumbs" />
+            </div>
+
             <!-- Site intro -->
             <div class="py-12 border-b border-gray-100">
                 <h1 class="text-4xl font-bold tracking-tight">Stories worth reading.</h1>
@@ -100,9 +105,11 @@ import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ViewCount from '@/Components/ViewCount.vue';
+import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
 defineProps({
     posts:           { type: Object,  required: true },
     currentCategory: { type: String,  default: null },
+    breadcrumbs:     { type: Array,   default: null },
 });
 </script>
