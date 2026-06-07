@@ -54,6 +54,8 @@
                             <span v-else class="font-medium text-gray-600">{{ post.author_name }}</span>
                             <span>·</span>
                             <time>{{ post.created_at }}</time>
+                            <span>·</span>
+                            <ViewCount :count="post.views" />
                         </div>
                     </div>
 
@@ -97,6 +99,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
+import ViewCount from '@/Components/ViewCount.vue';
 
 defineProps({
     posts:           { type: Object,  required: true },

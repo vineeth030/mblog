@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Category;
+use App\Services\PostViewService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -53,6 +54,9 @@ class HandleInertiaRequests extends Middleware
                         'name'  => $c->name,
                         'count' => $c->blog_posts_count,
                     ]),
+            'mostReadStories' => fn () => $request->is('admin*')
+                ? []
+                : app(PostViewService::class)->topRead(),
         ];
     }
 }

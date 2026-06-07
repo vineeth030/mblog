@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Services\PostViewService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -40,6 +41,7 @@ class BlogController extends Controller
                 'author_slug'     => $post->author?->slug,
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
+                'views'           => $post->views,
             ]);
 
         return Inertia::render('Blog/Index', [
@@ -48,9 +50,12 @@ class BlogController extends Controller
         ]);
     }
 
-    public function show(BlogPost $blogPost, Request $request): Response
+    public function show(BlogPost $blogPost, Request $request, PostViewService $views): Response
     {
         abort_if(! $blogPost->publish_status, 404);
+
+        // Count the visit (de-duplicated per visitor / window inside the service).
+        $views->record($blogPost, $request);
 
         $pages = $this->splitIntoPages($blogPost->content);
         $totalPages = count($pages);
@@ -69,6 +74,7 @@ class BlogController extends Controller
                 'cover_image_url' => $blogPost->cover_image_url,
                 'content_html'    => (string) $this->md->convert($pages[$currentPage - 1]),
                 'created_at'      => $blogPost->created_at->format('M j, Y'),
+                'views'           => $blogPost->views,
                 'tags'            => $blogPost->tags->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug]),
             ],
             'pagination' => $totalPages > 1 ? [

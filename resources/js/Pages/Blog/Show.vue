@@ -105,7 +105,11 @@
                             class="text-sm font-semibold"
                             :class="isReadingMode ? 'text-white' : 'text-gray-900'"
                         >{{ post.author_name }}</p>
-                        <time class="block text-xs text-gray-400">{{ post.created_at }}</time>
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <time>{{ post.created_at }}</time>
+                            <span>·</span>
+                            <ViewCount :count="post.views" />
+                        </div>
                     </div>
                 </div>
             </header>
@@ -178,6 +182,7 @@ import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
+import ViewCount from '@/Components/ViewCount.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
 
 const props = defineProps({

@@ -45,8 +45,9 @@
 
                 <!-- Sidebar (desktop only) -->
                 <aside v-show="!isReadingMode" class="hidden lg:block pt-8">
-                    <div class="sticky top-6">
+                    <div class="sticky top-6 space-y-8">
                         <CategoryList />
+                        <MostReadStories />
                     </div>
                 </aside>
 
@@ -57,8 +58,9 @@
             </div>
 
             <!-- Mobile categories (bottom of page) -->
-            <div v-show="!isReadingMode" class="lg:hidden border-t border-gray-100 py-10">
+            <div v-show="!isReadingMode" class="lg:hidden border-t border-gray-100 py-10 space-y-8">
                 <CategoryList />
+                <MostReadStories />
             </div>
         </div>
 
@@ -68,6 +70,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import CategoryList from '@/Components/CategoryList.vue';
+import MostReadStories from '@/Components/MostReadStories.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
 
 const { isReadingMode } = useReadingMode();

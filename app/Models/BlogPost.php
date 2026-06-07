@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -44,7 +45,20 @@ class BlogPost extends Model
     {
         return [
             'publish_status' => 'boolean',
+            'views'          => 'integer',
         ];
+    }
+
+    /**
+     * Posts that are live: published and not dated in the future. Used by the
+     * listings and the "Most Read" widget so neither drafts nor
+     * future-dated posts ever leak out.
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query
+            ->where('publish_status', true)
+            ->where('created_at', '<=', now());
     }
 
     /** Full public URL for the cover image, or null. */

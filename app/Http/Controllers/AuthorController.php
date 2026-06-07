@@ -25,6 +25,7 @@ class AuthorController extends Controller
                 'author_slug'     => $post->author?->slug,
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
+                'views'           => $post->views,
             ]);
 
         return Inertia::render('Blog/Author', [
