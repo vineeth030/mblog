@@ -25,6 +25,13 @@
                         <dd class="mt-1 text-gray-900 font-medium">{{ submission.title }}</dd>
                     </div>
                     <div>
+                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Author</dt>
+                        <dd class="mt-1 text-gray-700">
+                            <span v-if="submission.author_name">{{ submission.author_name }}</span>
+                            <span v-else class="text-gray-400">—</span>
+                        </dd>
+                    </div>
+                    <div>
                         <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</dt>
                         <dd class="mt-1">
                             <a :href="`mailto:${submission.email}`" class="text-indigo-600 hover:text-indigo-800 transition">

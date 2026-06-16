@@ -17,6 +17,7 @@ class StoreStorySubmissionRequest extends FormRequest
         return [
             'title'          => ['required', 'string', 'max:255'],
             'email'          => ['required', 'email', 'max:255'],
+            'author_name'    => ['required', 'string', 'max:255'],
             'category_id'    => ['required', 'integer', 'exists:categories,id'],
             'tags'           => ['nullable', 'string', 'max:255'],
             'story_content'  => ['required', 'string', 'min:50'],

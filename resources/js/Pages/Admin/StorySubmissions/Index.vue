@@ -20,7 +20,7 @@
                     v-model="search"
                     @input="debouncedFilter"
                     type="search"
-                    placeholder="Search by title or email…"
+                    placeholder="Search by title, author, or email…"
                     class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                 />
             </div>
@@ -51,6 +51,7 @@
                 <thead>
                     <tr class="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                         <th class="px-4 py-3">Title</th>
+                        <th class="px-4 py-3 hidden lg:table-cell">Author</th>
                         <th class="px-4 py-3 hidden md:table-cell">Email</th>
                         <th class="px-4 py-3 hidden md:table-cell">Category</th>
                         <th class="px-4 py-3 hidden xl:table-cell">Tags</th>
@@ -67,10 +68,17 @@
                     >
                         <td class="px-4 py-3 font-medium text-gray-900 max-w-xs">
                             <p class="line-clamp-1">{{ submission.title }}</p>
+                            <p v-if="submission.author_name" class="lg:hidden text-xs text-gray-400 mt-0.5">
+                                by {{ submission.author_name }}
+                            </p>
                             <p class="md:hidden text-xs text-gray-400 mt-0.5">{{ submission.email }}</p>
                             <p v-if="submission.category" class="md:hidden text-xs text-gray-400 mt-0.5">
                                 {{ submission.category }}
                             </p>
+                        </td>
+                        <td class="px-4 py-3 hidden lg:table-cell text-gray-500">
+                            <span v-if="submission.author_name">{{ submission.author_name }}</span>
+                            <span v-else class="text-gray-300">—</span>
                         </td>
                         <td class="px-4 py-3 hidden md:table-cell text-gray-500">{{ submission.email }}</td>
                         <td class="px-4 py-3 hidden md:table-cell text-gray-500">

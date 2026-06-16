@@ -52,6 +52,17 @@
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Author name</label>
+                        <input
+                            v-model="form.author_name"
+                            type="text"
+                            placeholder="Name to display with your story"
+                            :class="[inp, form.errors.author_name && inpErr]"
+                        />
+                        <p v-if="form.errors.author_name" class="mt-1 text-xs text-red-600">{{ form.errors.author_name }}</p>
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input
                             v-model="form.email"
@@ -153,6 +164,7 @@ const flash = computed(() => page.props.flash);
 const form = useForm({
     title:          '',
     email:          '',
+    author_name:    '',
     category_id:    '',
     tags:           '',
     story_content:  '',

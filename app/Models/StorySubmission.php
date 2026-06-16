@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'title',
     'email',
+    'author_name',
     'category_id',
     'tags',
     'story_content',

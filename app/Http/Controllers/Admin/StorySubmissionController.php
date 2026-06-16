@@ -22,7 +22,8 @@ class StorySubmissionController extends Controller
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('author_name', 'like', "%{$search}%");
                 });
             })
             ->when(in_array($status, StorySubmission::STATUSES, true), fn ($q) => $q->where('status', $status))
@@ -30,13 +31,14 @@ class StorySubmissionController extends Controller
             ->paginate(15)
             ->withQueryString()
             ->through(fn (StorySubmission $s) => [
-                'id'         => $s->id,
-                'title'      => $s->title,
-                'email'      => $s->email,
-                'category'   => $s->category?->name,
-                'tags'       => $s->tags,
-                'status'     => $s->status,
-                'created_at' => $s->created_at->toDateTimeString(),
+                'id'          => $s->id,
+                'title'       => $s->title,
+                'email'       => $s->email,
+                'author_name' => $s->author_name,
+                'category'    => $s->category?->name,
+                'tags'        => $s->tags,
+                'status'      => $s->status,
+                'created_at'  => $s->created_at->toDateTimeString(),
             ]);
 
         return Inertia::render('Admin/StorySubmissions/Index', [
@@ -58,6 +60,7 @@ class StorySubmissionController extends Controller
                 'id'            => $storySubmission->id,
                 'title'         => $storySubmission->title,
                 'email'         => $storySubmission->email,
+                'author_name'   => $storySubmission->author_name,
                 'category'      => $storySubmission->category?->name,
                 'tags'          => $storySubmission->tags,
                 'story_content' => $storySubmission->story_content,
