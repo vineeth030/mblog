@@ -19,7 +19,7 @@ class BlogPostController extends Controller
     public function index(): Response
     {
         $posts = BlogPost::with(['category', 'author'])
-            ->latest()
+            ->orderByDesc('id')
             ->paginate(10)
             ->through(fn (BlogPost $post) => [
                 'slug'            => $post->slug,
