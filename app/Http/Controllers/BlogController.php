@@ -61,6 +61,36 @@ class BlogController extends Controller
         ]);
     }
 
+    public function mostRead(): Response
+    {
+        $posts = BlogPost::with(['category', 'author'])
+            ->where('publish_status', true)
+            ->orderByDesc('views')
+            ->orderByDesc('created_at')
+            ->paginate(20)
+            ->through(fn (BlogPost $post) => [
+                'slug'            => $post->slug,
+                'title'           => $post->title,
+                'description'     => $post->description,
+                'category'        => $post->category?->name,
+                'author_name'     => $post->author?->name,
+                'author_slug'     => $post->author?->slug,
+                'cover_image_url' => $post->cover_image_url,
+                'created_at'      => $post->created_at->format('M j, Y'),
+                'views'           => $post->views,
+            ]);
+
+        $breadcrumbs = Breadcrumbs::make()
+            ->push('Home', route('blog.index'))
+            ->push('Most Read Stories', route('blog.most-read'))
+            ->toArray();
+
+        return Inertia::render('Blog/MostRead', [
+            'posts'       => $posts,
+            'breadcrumbs' => $breadcrumbs,
+        ]);
+    }
+
     public function show(BlogPost $blogPost, Request $request, PostViewService $views): Response
     {
         abort_if(! $blogPost->publish_status, 404);

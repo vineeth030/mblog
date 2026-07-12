@@ -15,6 +15,13 @@
                 </Link>
                 <nav class="flex items-center gap-4">
                     <Link
+                        :href="route('author.index')"
+                        class="text-xs text-gray-400 transition"
+                        :class="isReadingMode ? 'hover:text-white' : 'hover:text-gray-700'"
+                    >
+                        Authors
+                    </Link>
+                    <Link
                         :href="route('contact')"
                         class="text-xs text-gray-400 transition"
                         :class="isReadingMode ? 'hover:text-white' : 'hover:text-gray-700'"

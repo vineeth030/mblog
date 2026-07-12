@@ -17,8 +17,10 @@ use Inertia\Inertia;
 
 // ── Public blog ────────────────────────────────────────────
 Route::get('/', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/most-read-stories', [BlogController::class, 'mostRead'])->name('blog.most-read');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
+Route::get('/authors', [PublicAuthorController::class, 'index'])->name('author.index');
 Route::get('/authors/{author:slug}', [PublicAuthorController::class, 'show'])->name('author.show');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 

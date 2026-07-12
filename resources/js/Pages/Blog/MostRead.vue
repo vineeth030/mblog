@@ -1,30 +1,31 @@
 <template>
     <Head>
-        <title>{{ h1 }} | Kambikutan</title>
-        <meta head-key="description" name="description" :content="`Read the best Malayalam stories by ${author.name} on Kambikutan.${author.bio ? ' ' + author.bio : ''}`">
-        <link head-key="canonical" rel="canonical" :href="canonicalUrl">
-        <meta head-key="og:title" property="og:title" :content="h1">
-        <meta head-key="og:description" property="og:description" :content="`Read the best Malayalam stories by ${author.name} on Kambikutan.`">
-        <meta head-key="og:url" property="og:url" :content="canonicalUrl">
-        <meta head-key="og:type" property="og:type" content="profile">
-        <meta head-key="twitter:title" name="twitter:title" :content="h1">
-        <meta head-key="twitter:description" name="twitter:description" :content="`Read the best Malayalam stories by ${author.name} on Kambikutan.`">
+        <title>Most Popular Malayalam Kambi Stories | Kambikutan</title>
+        <meta head-key="description" name="description" content="The most read Malayalam kambi stories on Kambikutan, ranked by popularity. Discover the kambikathakal readers love most.">
+        <link head-key="canonical" rel="canonical" href="https://kambikutan.com/most-read-stories">
+        <meta head-key="og:title" property="og:title" content="Most Popular Malayalam Kambi Stories – Kambikutan">
+        <meta head-key="og:description" property="og:description" content="The most read Malayalam kambikathakal, ranked by popularity.">
+        <meta head-key="og:image" property="og:image" content="https://kambikutan.com/cover.jpg">
+        <meta head-key="og:url" property="og:url" content="https://kambikutan.com/most-read-stories">
+        <meta head-key="og:type" property="og:type" content="website">
+        <meta head-key="twitter:title" name="twitter:title" content="Most Popular Malayalam Kambi Stories – Kambikutan">
+        <meta head-key="twitter:description" name="twitter:description" content="The most read Malayalam kambikathakal, ranked by popularity.">
+        <meta head-key="twitter:image" name="twitter:image" content="https://kambikutan.com/cover.jpg">
     </Head>
 
     <PublicLayout>
         <div>
 
             <!-- Breadcrumbs -->
-            <div class="pt-8">
+            <div v-if="breadcrumbs" class="pt-8">
                 <Breadcrumbs :items="breadcrumbs" />
             </div>
 
             <!-- Header -->
             <div class="py-12 border-b border-gray-100">
-                <p class="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-2">Author</p>
-                <h1 class="text-4xl font-bold tracking-tight">{{ h1 }}</h1>
-                <p v-if="author.bio" class="mt-3 text-gray-500 leading-relaxed max-w-2xl">
-                    {{ author.bio }}
+                <h1 class="text-4xl font-bold tracking-tight">Most Popular Malayalam Kambi Stories</h1>
+                <p class="mt-3 text-gray-500 leading-relaxed max-w-2xl">
+                    The most read kambikathakal on Kambikutan, ranked by how many readers they've reached.
                 </p>
             </div>
 
@@ -53,7 +54,12 @@
                             </p>
                         </Link>
                         <div class="mt-4 flex items-center gap-2 text-xs text-gray-400">
-                            <span class="font-medium text-gray-600">{{ post.author_name }}</span>
+                            <Link
+                                v-if="post.author_slug"
+                                :href="route('author.show', post.author_slug)"
+                                class="font-medium text-gray-600 hover:text-indigo-600 transition"
+                            >{{ post.author_name }}</Link>
+                            <span v-else class="font-medium text-gray-600">{{ post.author_name }}</span>
                             <span>·</span>
                             <time>{{ post.created_at }}</time>
                             <span>·</span>
@@ -78,7 +84,7 @@
 
             <!-- Empty state -->
             <div v-else class="py-24 text-center">
-                <p class="text-gray-400 text-lg">No posts found for this author.</p>
+                <p class="text-gray-400 text-lg">No stories found.</p>
                 <Link
                     :href="route('blog.index')"
                     class="mt-3 inline-block text-sm text-indigo-600 hover:text-indigo-800 transition"
@@ -97,23 +103,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ViewCount from '@/Components/ViewCount.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
-const props = defineProps({
-    author: { type: Object, required: true },
-    posts:  { type: Object, required: true },
+defineProps({
+    posts:       { type: Object, required: true },
+    breadcrumbs: { type: Array,  default: null },
 });
-
-const h1 = computed(() => `Best Malayalam Stories by ${props.author.name}`);
-const canonicalUrl = computed(() => `https://kambikutan.com/authors/${props.author.slug}`);
-const breadcrumbs = computed(() => [
-    { title: 'Home', url: 'https://kambikutan.com/' },
-    { title: 'Authors', url: 'https://kambikutan.com/authors' },
-    { title: props.author.name, url: canonicalUrl.value },
-]);
 </script>

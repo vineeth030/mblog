@@ -22,7 +22,9 @@
 
             <!-- Site intro -->
             <div class="py-12 border-b border-gray-100">
-                <h1 class="text-4xl font-bold tracking-tight">Stories worth reading.</h1>
+                <h1 class="text-4xl font-bold tracking-tight">
+                    {{ currentCategory ? `Best Malayalam ${currentCategory} Stories` : 'Stories worth reading.' }}
+                </h1>
                 <!--<p class="mt-2 text-gray-500">Ideas, tutorials, and thoughts on web development.</p>-->
             </div>
 

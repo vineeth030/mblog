@@ -20,6 +20,12 @@
                 </Link>
             </li>
         </ol>
+        <Link
+            :href="route('blog.most-read')"
+            class="mt-3 inline-block px-3 text-xs font-medium text-indigo-600 hover:text-indigo-800 transition"
+        >
+            See all most popular stories →
+        </Link>
     </section>
 </template>
 

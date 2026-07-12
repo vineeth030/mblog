@@ -8,6 +8,25 @@ use Inertia\Response;
 
 class AuthorController extends Controller
 {
+    public function index(): Response
+    {
+        $authors = Author::query()
+            ->withCount(['blogPosts as posts_count' => fn ($q) => $q->where('publish_status', true)])
+            ->whereHas('blogPosts', fn ($q) => $q->where('publish_status', true))
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug', 'bio'])
+            ->map(fn ($author) => [
+                'name'        => $author->name,
+                'slug'        => $author->slug,
+                'bio'         => $author->bio,
+                'posts_count' => $author->posts_count,
+            ]);
+
+        return Inertia::render('Blog/Authors', [
+            'authors' => $authors,
+        ]);
+    }
+
     public function show(Author $author): Response
     {
         $posts = $author->blogPosts()
