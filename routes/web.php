@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\StorySubmissionController as AdminStorySubmission
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AuthorController as PublicAuthorController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CategoryController as PublicCategoryController;
 use App\Http\Controllers\EditorialController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StorySubmissionController;
@@ -20,14 +21,23 @@ Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/most-read-stories', [BlogController::class, 'mostRead'])->name('blog.most-read');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
+Route::get('/category/{category:slug}', [PublicCategoryController::class, 'show'])->name('category.show');
 Route::get('/authors', [PublicAuthorController::class, 'index'])->name('author.index');
 Route::get('/authors/{author:slug}', [PublicAuthorController::class, 'show'])->name('author.show');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/post-sitemap.xml', [SitemapController::class, 'posts'])->name('sitemap.posts');
+Route::get('/category-sitemap.xml', [SitemapController::class, 'categories'])->name('sitemap.categories');
+Route::get('/author-sitemap.xml', [SitemapController::class, 'authors'])->name('sitemap.authors');
+Route::get('/page-sitemap.xml', [SitemapController::class, 'pages'])->name('sitemap.pages');
 
 // ── Contact ────────────────────────────────────────────────
 Route::get('/contact', fn () => Inertia::render('Contact', [
     'email' => 'kambikutan@gmail.com',
 ]))->name('contact');
+
+// ── Legal ──────────────────────────────────────────────────
+Route::get('/privacy-policy', fn () => Inertia::render('Privacy'))->name('privacy');
+Route::get('/terms-and-conditions', fn () => Inertia::render('Terms'))->name('terms');
 
 // ── Public editorial ───────────────────────────────────────
 Route::get('/editorial', [EditorialController::class, 'index'])->name('editorial.index');

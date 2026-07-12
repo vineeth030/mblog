@@ -52,6 +52,7 @@ class HandleInertiaRequests extends Middleware
                     ->get()
                     ->map(fn (Category $c) => [
                         'name'  => $c->name,
+                        'slug'  => $c->slug,
                         'count' => $c->blog_posts_count,
                     ]),
             'mostReadStories' => fn () => $request->is('admin*')

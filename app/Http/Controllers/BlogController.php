@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Models\Category;
 use App\Services\PostViewService;
 use App\Support\Breadcrumbs;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,13 +25,21 @@ class BlogController extends Controller
         ]);
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Response|RedirectResponse
     {
-        $category = $request->query('category');
+        // Legacy category filter (?category=Name) now lives at /category/{slug}.
+        // Permanently redirect so any indexed query-param URLs consolidate onto
+        // the clean, self-canonical category pages.
+        if ($category = $request->query('category')) {
+            $model = Category::where('name', $category)->first();
+
+            return $model
+                ? redirect()->route('category.show', $model->slug, 301)
+                : redirect()->route('blog.index', [], 301);
+        }
 
         $posts = BlogPost::with(['category', 'author'])
             ->where('publish_status', true)
-            ->when($category, fn ($q) => $q->whereHas('category', fn ($q) => $q->where('name', $category)))
             ->latest()
             ->paginate(10)
             ->withQueryString()
@@ -45,19 +55,8 @@ class BlogController extends Controller
                 'views'           => $post->views,
             ]);
 
-        // Breadcrumbs only when a category filter is active; the bare home page
-        // gets none (best practice — don't show a single "Home" crumb).
-        $breadcrumbs = $category
-            ? Breadcrumbs::make()
-                ->push('Home', route('blog.index'))
-                ->push($category, route('blog.index', ['category' => $category]))
-                ->toArray()
-            : null;
-
         return Inertia::render('Blog/Index', [
-            'posts'           => $posts,
-            'currentCategory' => $category,
-            'breadcrumbs'     => $breadcrumbs,
+            'posts' => $posts,
         ]);
     }
 
@@ -108,14 +107,15 @@ class BlogController extends Controller
         if ($blogPost->category) {
             $breadcrumbs->push(
                 $blogPost->category->name,
-                route('blog.index', ['category' => $blogPost->category->name]),
+                route('category.show', $blogPost->category->slug),
             );
         }
         // Current page: same URL as the canonical tag so the signals agree.
         $breadcrumbs->push($blogPost->title, route('blog.show', $blogPost->slug));
 
         return Inertia::render('Blog/Show', [
-            'breadcrumbs' => $breadcrumbs->toArray(),
+            'breadcrumbs'  => $breadcrumbs->toArray(),
+            'relatedPosts' => $this->relatedPosts($blogPost),
             'post' => [
                 'slug'            => $blogPost->slug,
                 'title'           => $blogPost->title,
@@ -141,6 +141,52 @@ class BlogController extends Controller
                     : null,
             ] : null,
         ]);
+    }
+
+    /**
+     * Related stories, ranked by a weighted relevance score:
+     * shared-tag count (×3) + same category (+2) + same author (+2).
+     * Posts are ordered by that score, then popularity, then recency — so
+     * once genuinely-related posts run out, the remaining slots fill with
+     * the most-read stories. The section is therefore never empty.
+     */
+    private function relatedPosts(BlogPost $post, int $limit = 4): \Illuminate\Support\Collection
+    {
+        $tagIds = $post->tags->pluck('id')->all();
+
+        $tagScore = $tagIds
+            ? '(select count(*) from blog_post_tag'
+                . ' where blog_post_tag.blog_post_id = blog_posts.id'
+                . ' and blog_post_tag.tag_id in (' . implode(',', array_fill(0, count($tagIds), '?')) . ')) * 3'
+            : '0';
+
+        return BlogPost::query()
+            ->with(['category', 'author'])
+            ->published()
+            ->where('id', '!=', $post->id)
+            ->select('blog_posts.*')
+            ->selectRaw(
+                "{$tagScore}"
+                . ' + case when category_id = ? then 2 else 0 end'
+                . ' + case when author_id = ? then 2 else 0 end as relevance',
+                array_merge($tagIds, [$post->category_id, $post->author_id]),
+            )
+            ->orderByDesc('relevance')
+            ->orderByDesc('views')
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get()
+            ->map(fn (BlogPost $p) => [
+                'slug'            => $p->slug,
+                'title'           => $p->title,
+                'description'     => $p->description,
+                'category'        => $p->category?->name,
+                'author_name'     => $p->author?->name,
+                'author_slug'     => $p->author?->slug,
+                'cover_image_url' => $p->cover_image_url,
+                'created_at'      => $p->created_at->format('M j, Y'),
+                'views'           => $p->views,
+            ]);
     }
 
     private function splitIntoPages(string $markdown, int $wordsPerPage = 1000): array

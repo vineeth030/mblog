@@ -150,6 +150,11 @@
                 <Pagination :paginator="pagination" />
             </div>
 
+            <!-- Related stories — hidden in reading mode to avoid distraction. -->
+            <div v-if="!isReadingMode && relatedPosts.length" class="mt-16 pt-8 border-t border-gray-100">
+                <RelatedStories :stories="relatedPosts" />
+            </div>
+
             <!-- Footer -->
             <footer
                 class="mt-16 py-8 border-t transition-colors duration-300 motion-reduce:transition-none"
@@ -175,12 +180,14 @@ import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ViewCount from '@/Components/ViewCount.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import RelatedStories from '@/Components/RelatedStories.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
 
 const props = defineProps({
-    post:        { type: Object, required: true },
-    pagination:  { type: Object, default: null },
-    breadcrumbs: { type: Array,  default: () => [] },
+    post:         { type: Object, required: true },
+    pagination:   { type: Object, default: null },
+    breadcrumbs:  { type: Array,  default: () => [] },
+    relatedPosts: { type: Array,  default: () => [] },
 });
 
 // ── Reading mode ──────────────────────────────────────────────────────────
