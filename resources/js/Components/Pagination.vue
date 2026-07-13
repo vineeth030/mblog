@@ -78,7 +78,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -96,12 +96,42 @@ const pageUrl = (n) => {
     return `${template}${sep}page=${n}`;
 };
 
+// How many consecutive page numbers to show in the sliding window:
+// fewer on mobile so the row doesn't wrap, more on desktop.
+const WINDOW_MOBILE  = 5;
+const WINDOW_DESKTOP = 8;
+
+// Track viewport against Tailwind's `sm` breakpoint (640px). Guard against SSR
+// where `window` is undefined; default to the desktop window in that case.
+const isMobile = ref(false);
+let mql = null;
+const syncViewport = () => { isMobile.value = mql.matches; };
+
+onMounted(() => {
+    if (typeof window === 'undefined') return;
+    mql = window.matchMedia('(max-width: 639.98px)');
+    syncViewport();
+    mql.addEventListener('change', syncViewport);
+});
+onUnmounted(() => {
+    if (mql) mql.removeEventListener('change', syncViewport);
+});
+
 const visiblePages = computed(() => {
     const current = props.paginator.current_page;
     const last    = props.paginator.last_page;
     if (last <= 1) return [];
 
-    const wanted = new Set([1, last, current, current - 1, current + 1]);
+    // Build a window of consecutive pages centered on the current page,
+    // clamped to the [1, last] range so it stays full-width at the edges.
+    const WINDOW = isMobile.value ? WINDOW_MOBILE : WINDOW_DESKTOP;
+    const half  = Math.floor(WINDOW / 2);
+    let   start = Math.max(1, current - half);
+    let   end   = Math.min(last, start + WINDOW - 1);
+    start = Math.max(1, end - WINDOW + 1);
+
+    const wanted = new Set([1, last]);
+    for (let p = start; p <= end; p++) wanted.add(p);
     const sorted = [...wanted].filter(p => p >= 1 && p <= last).sort((a, b) => a - b);
 
     const result = [];
