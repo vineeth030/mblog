@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Services\LikeService;
 use App\Services\PostViewService;
 use App\Support\Breadcrumbs;
 use Illuminate\Http\RedirectResponse;
@@ -53,6 +54,7 @@ class BlogController extends Controller
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
                 'views'           => $post->views,
+                'likes'           => (int) $post->likes,
             ]);
 
         return Inertia::render('Blog/Index', [
@@ -77,6 +79,7 @@ class BlogController extends Controller
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
                 'views'           => $post->views,
+                'likes'           => (int) $post->likes,
             ]);
 
         $breadcrumbs = Breadcrumbs::make()
@@ -90,7 +93,7 @@ class BlogController extends Controller
         ]);
     }
 
-    public function show(BlogPost $blogPost, Request $request, PostViewService $views): Response
+    public function show(BlogPost $blogPost, Request $request, PostViewService $views, LikeService $likes): Response
     {
         abort_if(! $blogPost->publish_status, 404);
 
@@ -127,6 +130,8 @@ class BlogController extends Controller
                 'content_html'    => (string) $this->md->convert($pages[$currentPage - 1]),
                 'created_at'      => $blogPost->created_at->format('M j, Y'),
                 'views'           => $blogPost->views,
+                'likes'           => (int) $blogPost->likes,
+                'liked'           => $likes->hasLiked($blogPost, $request),
                 'tags'            => $blogPost->tags->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug]),
             ],
             'pagination' => $totalPages > 1 ? [
@@ -186,6 +191,7 @@ class BlogController extends Controller
                 'cover_image_url' => $p->cover_image_url,
                 'created_at'      => $p->created_at->format('M j, Y'),
                 'views'           => $p->views,
+                'likes'           => (int) $p->likes,
             ]);
     }
 

@@ -144,6 +144,16 @@
                 v-html="post.content_html"
             />
 
+            <!-- Like call-to-action — hidden in reading mode to avoid distraction. -->
+            <div v-if="!isReadingMode" class="mt-12 flex flex-col items-center gap-2">
+                <HeartButton
+                    :post-slug="post.slug"
+                    :initial-likes="post.likes"
+                    :initial-liked="post.liked"
+                />
+                <p class="text-xs text-gray-400">Enjoyed this story? Give it a like.</p>
+            </div>
+
             <!-- Pagination — hidden in reading mode (closest thing to a
                  "related/next posts" distraction on this page). -->
             <div v-if="pagination && !isReadingMode" class="mt-12 border-t border-gray-100 pt-8">
@@ -179,6 +189,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ViewCount from '@/Components/ViewCount.vue';
+import HeartButton from '@/Components/HeartButton.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import RelatedStories from '@/Components/RelatedStories.vue';
 import { useReadingMode } from '@/composables/useReadingMode';

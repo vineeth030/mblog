@@ -26,6 +26,7 @@ class TagController extends Controller
                 'cover_image_url' => $post->cover_image_url,
                 'created_at'      => $post->created_at->format('M j, Y'),
                 'views'           => $post->views,
+                'likes'           => (int) $post->likes,
             ]);
 
         return Inertia::render('Blog/Tag', [

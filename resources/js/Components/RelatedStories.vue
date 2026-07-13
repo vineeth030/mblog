@@ -39,6 +39,8 @@
                     <time>{{ story.created_at }}</time>
                     <span>·</span>
                     <ViewCount :count="story.views" />
+                    <span>·</span>
+                    <LikeCount :count="story.likes" />
                 </div>
             </article>
         </div>
@@ -48,6 +50,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import ViewCount from '@/Components/ViewCount.vue';
+import LikeCount from '@/Components/LikeCount.vue';
 
 defineProps({
     stories: { type: Array, default: () => [] },

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
@@ -41,11 +42,18 @@ class BlogPost extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    /** Individual anonymous "like" rows; the aggregate lives on the `likes` column. */
+    public function storyLikes(): HasMany
+    {
+        return $this->hasMany(StoryLike::class);
+    }
+
     protected function casts(): array
     {
         return [
             'publish_status' => 'boolean',
             'views'          => 'integer',
+            'likes'          => 'integer',
         ];
     }
 

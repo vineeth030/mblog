@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthorController as PublicAuthorController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController as PublicCategoryController;
 use App\Http\Controllers\EditorialController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StorySubmissionController;
 use App\Http\Controllers\TagController;
@@ -20,6 +21,10 @@ use Inertia\Inertia;
 Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/most-read-stories', [BlogController::class, 'mostRead'])->name('blog.most-read');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
+// Anonymous like toggle. Rate limited to curb scripted abuse.
+Route::post('/post/{blogPost}/like', [LikeController::class, 'toggle'])
+    ->middleware('throttle:30,1')
+    ->name('blog.like');
 Route::get('/tags/{tag}', [TagController::class, 'show'])->name('tag.show');
 Route::get('/category/{category:slug}', [PublicCategoryController::class, 'show'])->name('category.show');
 Route::get('/authors', [PublicAuthorController::class, 'index'])->name('author.index');

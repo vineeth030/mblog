@@ -59,6 +59,8 @@
                             <time>{{ post.created_at }}</time>
                             <span>·</span>
                             <ViewCount :count="post.views" />
+                            <span>·</span>
+                            <LikeCount :count="post.likes" />
                         </div>
                     </div>
 
@@ -103,6 +105,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Components/PublicLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ViewCount from '@/Components/ViewCount.vue';
+import LikeCount from '@/Components/LikeCount.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
 const props = defineProps({
