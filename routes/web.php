@@ -64,6 +64,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
     Route::get('dashboard', fn () => redirect()->route('admin.blog-posts.index'))->name('dashboard');
 
+    Route::get('blog-posts/search-parts', [BlogPostController::class, 'searchParts'])->name('blog-posts.search-parts');
     Route::resource('blog-posts', BlogPostController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 

@@ -34,6 +34,14 @@ class UpdateBlogPostRequest extends FormRequest
             'cover_image'    => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
             'tags'           => ['nullable', 'array'],
             'tags.*'         => ['string', 'max:50'],
+            'previous_part_id' => [
+                'nullable', 'integer', 'exists:blog_posts,id',
+                function (string $attribute, $value, \Closure $fail): void {
+                    if ((int) $value === (int) $this->route('blog_post')?->id) {
+                        $fail('A story cannot be linked to itself.');
+                    }
+                },
+            ],
         ];
     }
 }

@@ -136,6 +136,21 @@
                         <p v-if="form.errors.author_id" :class="err">{{ form.errors.author_id }}</p>
                     </div>
 
+                    <!-- Previous part (multi-part stories) -->
+                    <div class="px-4 py-3">
+                        <label :class="lbl">
+                            Previous Part
+                            <span class="text-gray-400 font-normal ml-1">(optional)</span>
+                        </label>
+                        <SeriesPartPicker
+                            v-model="form.previous_part_id"
+                            :initial-label="previousPartTitle"
+                            :exclude-id="excludeId"
+                        />
+                        <p class="mt-1 text-xs text-gray-400">Link this story as the next part after another story.</p>
+                        <p v-if="form.errors.previous_part_id" :class="err">{{ form.errors.previous_part_id }}</p>
+                    </div>
+
                     <!-- Tags -->
                     <div class="px-4 py-3">
                         <label :class="lbl">Tags</label>
@@ -239,13 +254,16 @@
 <script setup>
 import { ref } from 'vue';
 import TextEditor from '@/Components/Admin/TextEditor.vue';
+import SeriesPartPicker from '@/Components/Admin/SeriesPartPicker.vue';
 
 const props = defineProps({
-    form:             { type: Object, required: true },
-    existingImageUrl: { type: String, default: null  },
-    submitLabel:      { type: String, default: 'Save Post' },
-    categories:       { type: Array,  default: () => [] },
-    authors:          { type: Array,  default: () => [] },
+    form:              { type: Object, required: true },
+    existingImageUrl:  { type: String, default: null  },
+    submitLabel:       { type: String, default: 'Save Post' },
+    categories:        { type: Array,  default: () => [] },
+    authors:           { type: Array,  default: () => [] },
+    previousPartTitle: { type: String, default: null },
+    excludeId:         { type: [Number, String], default: null },
 });
 
 defineEmits(['submit']);

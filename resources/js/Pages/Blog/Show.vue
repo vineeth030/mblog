@@ -118,6 +118,12 @@
                 </Link>
             </div>
 
+            <!-- Parts in this story — kept visible in reading mode too, since a
+                 reader mid-story may want to jump to another part. -->
+            <div class="mt-5">
+                <SeriesPartsList :parts="seriesParts" :is-reading-mode="isReadingMode" />
+            </div>
+
             <!-- Divider -->
             <hr
                 class="my-8 transition-colors duration-300 motion-reduce:transition-none"
@@ -192,6 +198,7 @@ import ViewCount from '@/Components/ViewCount.vue';
 import HeartButton from '@/Components/HeartButton.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import RelatedStories from '@/Components/RelatedStories.vue';
+import SeriesPartsList from '@/Components/SeriesPartsList.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
 
 const props = defineProps({
@@ -199,6 +206,7 @@ const props = defineProps({
     pagination:   { type: Object, default: null },
     breadcrumbs:  { type: Array,  default: () => [] },
     relatedPosts: { type: Array,  default: () => [] },
+    seriesParts:  { type: Array,  default: () => [] },
 });
 
 // ── Reading mode ──────────────────────────────────────────────────────────

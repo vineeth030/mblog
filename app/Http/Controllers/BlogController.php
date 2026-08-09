@@ -167,6 +167,7 @@ class BlogController extends Controller
         return Inertia::render('Blog/Show', [
             'breadcrumbs'  => $breadcrumbs->toArray(),
             'relatedPosts' => $this->relatedPosts($blogPost),
+            'seriesParts'  => $this->seriesParts($blogPost),
             'post' => [
                 'slug'            => $blogPost->slug,
                 'title'           => $blogPost->title,
@@ -240,6 +241,28 @@ class BlogController extends Controller
                 'created_at'      => $p->created_at->format('M j, Y'),
                 'views'           => $p->views,
                 'likes'           => (int) $p->likes,
+            ]);
+    }
+
+    /**
+     * All parts of the multi-part story $post belongs to (including itself),
+     * ordered by part number. Empty if the post isn't part of a series.
+     */
+    private function seriesParts(BlogPost $post): \Illuminate\Support\Collection
+    {
+        if (! $post->series_id) {
+            return collect();
+        }
+
+        return BlogPost::where('series_id', $post->series_id)
+            ->published()
+            ->orderBy('part_number')
+            ->get(['id', 'slug', 'title', 'part_number'])
+            ->map(fn (BlogPost $p) => [
+                'slug'        => $p->slug,
+                'title'       => $p->title,
+                'part_number' => $p->part_number,
+                'is_current'  => (int) $p->id === (int) $post->id,
             ]);
     }
 

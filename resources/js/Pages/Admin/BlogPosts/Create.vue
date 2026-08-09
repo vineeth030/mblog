@@ -38,15 +38,16 @@ defineProps({
 });
 
 const form = useForm({
-    title:          '',
-    slug:           '',
-    description:    '',
-    category_id:    '',
-    author_id:      '',
-    content:        '',
-    publish_status: 0,
-    cover_image:    null,
-    tags:           [],
+    title:             '',
+    slug:              '',
+    description:       '',
+    category_id:       '',
+    author_id:         '',
+    content:           '',
+    publish_status:    0,
+    cover_image:       null,
+    tags:              [],
+    previous_part_id:  null,
 });
 
 function submit() {

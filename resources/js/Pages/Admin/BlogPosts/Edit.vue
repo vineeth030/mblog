@@ -21,6 +21,8 @@
             :existing-image-url="post.cover_image_url"
             :categories="categories"
             :authors="authors"
+            :previous-part-title="post.previous_part_title"
+            :exclude-id="post.id"
             submit-label="Update Post"
             @submit="submit"
         />
@@ -40,15 +42,16 @@ const props = defineProps({
 });
 
 const form = useForm({
-    title:          props.post.title,
-    slug:           props.post.slug,
-    description:    props.post.description,
-    category_id:    props.post.category_id,
-    author_id:      props.post.author_id,
-    content:        props.post.content,
-    publish_status: props.post.publish_status ? 1 : 0,
-    cover_image:    null,
-    tags:           props.post.tags ?? [],
+    title:             props.post.title,
+    slug:              props.post.slug,
+    description:       props.post.description,
+    category_id:       props.post.category_id,
+    author_id:         props.post.author_id,
+    content:           props.post.content,
+    publish_status:    props.post.publish_status ? 1 : 0,
+    cover_image:       null,
+    tags:              props.post.tags ?? [],
+    previous_part_id:  props.post.previous_part_id ?? null,
 });
 
 function submit() {
