@@ -14,6 +14,27 @@
                     kambikutan.com
                 </Link>
                 <nav class="flex items-center gap-4">
+                    <form @submit.prevent="submitSearch" class="relative">
+                        <label for="site-search" class="sr-only">Search stories</label>
+                        <svg
+                            class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <input
+                            id="site-search"
+                            v-model="searchTerm"
+                            type="search"
+                            name="q"
+                            placeholder="Search stories"
+                            class="w-32 sm:w-48 pl-8 pr-2 py-1.5 text-xs rounded-md border transition focus:outline-none focus:ring-1"
+                            :class="isReadingMode
+                                ? 'bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:ring-white/30'
+                                : 'bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:ring-gray-300'"
+                        />
+                    </form>
                     <Link
                         :href="route('author.index')"
                         class="text-xs text-gray-400 transition"
@@ -135,8 +156,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import CategoryList from '@/Components/CategoryList.vue';
 import MostReadStories from '@/Components/MostReadStories.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
@@ -146,4 +167,11 @@ const { isReadingMode } = useReadingMode();
 const page = usePage();
 const categories = computed(() => page.props.publicCategories ?? []);
 const year = new Date().getFullYear();
+
+const searchTerm = ref(page.props.query ?? '');
+const submitSearch = () => {
+    const q = searchTerm.value.trim();
+    if (!q) return;
+    router.get(route('blog.search'), { q });
+};
 </script>

@@ -20,6 +20,7 @@ use Inertia\Inertia;
 // ── Public blog ────────────────────────────────────────────
 Route::get('/', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/most-read-stories', [BlogController::class, 'mostRead'])->name('blog.most-read');
+Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
 Route::get('/post/{blogPost}', [BlogController::class, 'show'])->name('blog.show');
 // Anonymous like toggle. Rate limited to curb scripted abuse.
 Route::post('/post/{blogPost}/like', [LikeController::class, 'toggle'])

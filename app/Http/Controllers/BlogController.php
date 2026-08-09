@@ -9,6 +9,7 @@ use App\Services\PostViewService;
 use App\Support\Breadcrumbs;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Inertia\Response;
 use League\CommonMark\CommonMarkConverter;
@@ -59,6 +60,53 @@ class BlogController extends Controller
 
         return Inertia::render('Blog/Index', [
             'posts' => $posts,
+        ]);
+    }
+
+    public function search(Request $request): Response
+    {
+        $term = trim((string) $request->query('q', ''));
+
+        // Skip the query entirely for empty/1-char input rather than running a
+        // pointless full scan; render the page with an empty result set.
+        if (mb_strlen($term) < 2) {
+            $posts = new LengthAwarePaginator([], 0, 10);
+            $posts->withQueryString();
+        } else {
+            // Escape LIKE metacharacters so the visitor's own input can't widen
+            // their match with an unintended `%`/`_` wildcard.
+            $escaped = addcslashes($term, '%_\\');
+
+            $posts = BlogPost::published()
+                ->with(['category', 'author'])
+                ->where(function ($query) use ($escaped) {
+                    $query->where('title', 'like', "%{$escaped}%")
+                        ->orWhere('description', 'like', "%{$escaped}%")
+                        ->orWhere('content', 'like', "%{$escaped}%");
+                })
+                // Rank title matches above description/content-only matches.
+                ->orderByRaw('CASE WHEN title LIKE ? THEN 0 ELSE 1 END', ["%{$escaped}%"])
+                ->latest()
+                ->paginate(10)
+                ->withQueryString();
+        }
+
+        $posts->through(fn (BlogPost $post) => [
+            'slug'            => $post->slug,
+            'title'           => $post->title,
+            'description'     => $post->description,
+            'category'        => $post->category?->name,
+            'author_name'     => $post->author?->name,
+            'author_slug'     => $post->author?->slug,
+            'cover_image_url' => $post->cover_image_url,
+            'created_at'      => $post->created_at->format('M j, Y'),
+            'views'           => $post->views,
+            'likes'           => (int) $post->likes,
+        ]);
+
+        return Inertia::render('Blog/Search', [
+            'posts' => $posts,
+            'query' => $term,
         ]);
     }
 
