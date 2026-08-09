@@ -1,7 +1,7 @@
 <template>
-    <section v-if="stories.length" aria-labelledby="related-heading">
-        <h2 id="related-heading" class="text-xl font-bold tracking-tight text-gray-900">
-            Related Stories
+    <section v-if="stories.length" :aria-labelledby="headingId">
+        <h2 :id="headingId" class="text-xl font-bold tracking-tight text-gray-900">
+            {{ heading }}
         </h2>
 
         <div class="mt-6 grid gap-6 sm:grid-cols-2">
@@ -48,11 +48,17 @@
 </template>
 
 <script setup>
+import { useId } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import ViewCount from '@/Components/ViewCount.vue';
 import LikeCount from '@/Components/LikeCount.vue';
 
 defineProps({
-    stories: { type: Array, default: () => [] },
+    stories: { type: Array,  default: () => [] },
+    heading: { type: String, default: 'Related Stories' },
 });
+
+// Unique per instance so multiple sections (Related / By Author / In
+// Category) on the same page don't collide on the same heading id.
+const headingId = useId();
 </script>

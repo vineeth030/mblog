@@ -166,9 +166,19 @@
                 <Pagination :paginator="pagination" />
             </div>
 
-            <!-- Related stories — hidden in reading mode to avoid distraction. -->
+            <!-- Related / more-by-author / more-in-category — hidden in
+                 reading mode to avoid distraction, and skipped individually
+                 when empty (e.g. a post with no author or category set). -->
             <div v-if="!isReadingMode && relatedPosts.length" class="mt-16 pt-8 border-t border-gray-100">
                 <RelatedStories :stories="relatedPosts" />
+            </div>
+
+            <div v-if="!isReadingMode && moreByAuthor.length" class="mt-16 pt-8 border-t border-gray-100">
+                <RelatedStories :stories="moreByAuthor" :heading="`More by ${post.author_name}`" />
+            </div>
+
+            <div v-if="!isReadingMode && moreInCategory.length" class="mt-16 pt-8 border-t border-gray-100">
+                <RelatedStories :stories="moreInCategory" :heading="`More in ${post.category}`" />
             </div>
 
             <!-- Footer -->
@@ -202,11 +212,13 @@ import SeriesPartsList from '@/Components/SeriesPartsList.vue';
 import { useReadingMode } from '@/composables/useReadingMode';
 
 const props = defineProps({
-    post:         { type: Object, required: true },
-    pagination:   { type: Object, default: null },
-    breadcrumbs:  { type: Array,  default: () => [] },
-    relatedPosts: { type: Array,  default: () => [] },
-    seriesParts:  { type: Array,  default: () => [] },
+    post:           { type: Object, required: true },
+    pagination:     { type: Object, default: null },
+    breadcrumbs:    { type: Array,  default: () => [] },
+    relatedPosts:   { type: Array,  default: () => [] },
+    moreByAuthor:   { type: Array,  default: () => [] },
+    moreInCategory: { type: Array,  default: () => [] },
+    seriesParts:    { type: Array,  default: () => [] },
 });
 
 // ── Reading mode ──────────────────────────────────────────────────────────

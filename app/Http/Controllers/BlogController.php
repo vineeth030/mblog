@@ -165,9 +165,9 @@ class BlogController extends Controller
         $breadcrumbs->push($blogPost->title, route('blog.show', $blogPost->slug));
 
         return Inertia::render('Blog/Show', [
-            'breadcrumbs'  => $breadcrumbs->toArray(),
-            'relatedPosts' => $this->relatedPosts($blogPost),
-            'seriesParts'  => $this->seriesParts($blogPost),
+            'breadcrumbs' => $breadcrumbs->toArray(),
+            'seriesParts' => $this->seriesParts($blogPost),
+            ...$this->linkSections($blogPost),
             'post' => [
                 'slug'            => $blogPost->slug,
                 'title'           => $blogPost->title,
@@ -198,13 +198,55 @@ class BlogController extends Controller
     }
 
     /**
-     * Related stories, ranked by a weighted relevance score:
-     * shared-tag count (×3) + same category (+2) + same author (+2).
-     * Posts are ordered by that score, then popularity, then recency — so
-     * once genuinely-related posts run out, the remaining slots fill with
-     * the most-read stories. The section is therefore never empty.
+     * Three internal-link sections for the story page — Related, More by
+     * this Author, More in this Category — deduplicated against each other
+     * via a shared running exclusion set, so the same story never appears
+     * twice on one page. Combined they give readers (and crawlers) 20
+     * contextual internal links per page when the post has both an author
+     * and a category (required fields, so true for all normal posts).
      */
-    private function relatedPosts(BlogPost $post, int $limit = 4): \Illuminate\Support\Collection
+    private function linkSections(BlogPost $post): array
+    {
+        $excludeIds = [$post->id];
+
+        $related = $this->pickPosts($this->relatedPostsQuery($post, $excludeIds), 8);
+        $excludeIds = [...$excludeIds, ...$related->pluck('id')->all()];
+
+        $byAuthor = $post->author_id
+            ? $this->pickPosts(
+                BlogPost::published()->whereNotIn('id', $excludeIds)
+                    ->where('author_id', $post->author_id)
+                    ->orderByDesc('created_at'),
+                6,
+            )
+            : collect();
+        $excludeIds = [...$excludeIds, ...$byAuthor->pluck('id')->all()];
+
+        $inCategory = $post->category_id
+            ? $this->pickPosts(
+                BlogPost::published()->whereNotIn('id', $excludeIds)
+                    ->where('category_id', $post->category_id)
+                    ->orderByDesc('views')
+                    ->orderByDesc('created_at'),
+                6,
+            )
+            : collect();
+
+        return [
+            'relatedPosts'   => $this->mapPostCards($related),
+            'moreByAuthor'   => $this->mapPostCards($byAuthor),
+            'moreInCategory' => $this->mapPostCards($inCategory),
+        ];
+    }
+
+    /**
+     * Ranked by a weighted relevance score: shared-tag count (×3) + same
+     * category (+2) + same author (+2). Ordered by that score, then
+     * popularity, then recency — so once genuinely-related posts run out,
+     * the remaining slots fill with the most-read stories. Never empty
+     * (given enough other published posts to exclude only $excludeIds).
+     */
+    private function relatedPostsQuery(BlogPost $post, array $excludeIds): \Illuminate\Database\Eloquent\Builder
     {
         $tagIds = $post->tags->pluck('id')->all();
 
@@ -215,9 +257,8 @@ class BlogController extends Controller
             : '0';
 
         return BlogPost::query()
-            ->with(['category', 'author'])
             ->published()
-            ->where('id', '!=', $post->id)
+            ->whereNotIn('id', $excludeIds)
             ->select('blog_posts.*')
             ->selectRaw(
                 "{$tagScore}"
@@ -227,21 +268,28 @@ class BlogController extends Controller
             )
             ->orderByDesc('relevance')
             ->orderByDesc('views')
-            ->orderByDesc('created_at')
-            ->limit($limit)
-            ->get()
-            ->map(fn (BlogPost $p) => [
-                'slug'            => $p->slug,
-                'title'           => $p->title,
-                'description'     => $p->description,
-                'category'        => $p->category?->name,
-                'author_name'     => $p->author?->name,
-                'author_slug'     => $p->author?->slug,
-                'cover_image_url' => $p->cover_image_url,
-                'created_at'      => $p->created_at->format('M j, Y'),
-                'views'           => $p->views,
-                'likes'           => (int) $p->likes,
-            ]);
+            ->orderByDesc('created_at');
+    }
+
+    private function pickPosts(\Illuminate\Database\Eloquent\Builder $query, int $limit): \Illuminate\Support\Collection
+    {
+        return $query->with(['category', 'author'])->limit($limit)->get();
+    }
+
+    private function mapPostCards(\Illuminate\Support\Collection $posts): \Illuminate\Support\Collection
+    {
+        return $posts->map(fn (BlogPost $p) => [
+            'slug'            => $p->slug,
+            'title'           => $p->title,
+            'description'     => $p->description,
+            'category'        => $p->category?->name,
+            'author_name'     => $p->author?->name,
+            'author_slug'     => $p->author?->slug,
+            'cover_image_url' => $p->cover_image_url,
+            'created_at'      => $p->created_at->format('M j, Y'),
+            'views'           => $p->views,
+            'likes'           => (int) $p->likes,
+        ]);
     }
 
     /**
