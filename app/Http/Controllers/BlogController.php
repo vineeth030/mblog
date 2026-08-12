@@ -81,10 +81,11 @@ class BlogController extends Controller
                 ->with(['category', 'author'])
                 ->where(function ($query) use ($escaped) {
                     $query->where('title', 'like', "%{$escaped}%")
-                        ->orWhere('description', 'like', "%{$escaped}%")
-                        ->orWhere('content', 'like', "%{$escaped}%");
+                        ->orWhereHas('author', function ($authorQuery) use ($escaped) {
+                            $authorQuery->where('name', 'like', "%{$escaped}%");
+                        });
                 })
-                // Rank title matches above description/content-only matches.
+                // Rank title matches above author-only matches.
                 ->orderByRaw('CASE WHEN title LIKE ? THEN 0 ELSE 1 END', ["%{$escaped}%"])
                 ->latest()
                 ->paginate(10)
