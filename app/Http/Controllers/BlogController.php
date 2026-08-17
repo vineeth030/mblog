@@ -199,12 +199,13 @@ class BlogController extends Controller
     }
 
     /**
-     * Three internal-link sections for the story page — Related, More by
-     * this Author, More in this Category — deduplicated against each other
-     * via a shared running exclusion set, so the same story never appears
-     * twice on one page. Combined they give readers (and crawlers) 20
-     * contextual internal links per page when the post has both an author
-     * and a category (required fields, so true for all normal posts).
+     * Four internal-link sections for the story page — Related, More by
+     * this Author, More in this Category, Latest Stories — deduplicated
+     * against each other via a shared running exclusion set, so the same
+     * story never appears twice on one page. Combined they give readers
+     * (and crawlers) 26 contextual internal links per page when the post
+     * has both an author and a category (required fields, so true for all
+     * normal posts).
      */
     private function linkSections(BlogPost $post): array
     {
@@ -232,11 +233,19 @@ class BlogController extends Controller
                 6,
             )
             : collect();
+        $excludeIds = [...$excludeIds, ...$inCategory->pluck('id')->all()];
+
+        $latest = $this->pickPosts(
+            BlogPost::published()->whereNotIn('id', $excludeIds)
+                ->orderByDesc('created_at'),
+            6,
+        );
 
         return [
             'relatedPosts'   => $this->mapPostCards($related),
             'moreByAuthor'   => $this->mapPostCards($byAuthor),
             'moreInCategory' => $this->mapPostCards($inCategory),
+            'latestStories'  => $this->mapPostCards($latest),
         ];
     }
 

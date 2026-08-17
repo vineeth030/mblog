@@ -166,8 +166,8 @@
                 <Pagination :paginator="pagination" />
             </div>
 
-            <!-- Related / more-by-author / more-in-category — hidden in
-                 reading mode to avoid distraction, and skipped individually
+            <!-- Related / more-by-author / more-in-category / latest — hidden
+                 in reading mode to avoid distraction, and skipped individually
                  when empty (e.g. a post with no author or category set). -->
             <div v-if="!isReadingMode && relatedPosts.length" class="mt-16 pt-8 border-t border-gray-100">
                 <RelatedStories :stories="relatedPosts" />
@@ -179,6 +179,10 @@
 
             <div v-if="!isReadingMode && moreInCategory.length" class="mt-16 pt-8 border-t border-gray-100">
                 <RelatedStories :stories="moreInCategory" :heading="`More in ${post.category}`" />
+            </div>
+
+            <div v-if="!isReadingMode && latestStories.length" class="mt-16 pt-8 border-t border-gray-100">
+                <RelatedStories :stories="latestStories" heading="Latest Stories" />
             </div>
 
             <!-- Footer -->
@@ -218,6 +222,7 @@ const props = defineProps({
     relatedPosts:   { type: Array,  default: () => [] },
     moreByAuthor:   { type: Array,  default: () => [] },
     moreInCategory: { type: Array,  default: () => [] },
+    latestStories:  { type: Array,  default: () => [] },
     seriesParts:    { type: Array,  default: () => [] },
 });
 
