@@ -126,7 +126,7 @@ class StoryImporter
                     'category_id' => $category?->id,
                     'author_id' => $author->id,
                     'content' => $content,
-                    'publish_status' => false,
+                    'publish_status' => true,
                 ]);
             });
 

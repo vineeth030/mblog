@@ -32,7 +32,8 @@ class AuthorController extends Controller
         $posts = $author->blogPosts()
             ->with(['category', 'author'])
             ->where('publish_status', true)
-            ->latest()
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString()
             ->through(fn ($post) => [

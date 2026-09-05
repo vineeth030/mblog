@@ -42,7 +42,8 @@ class BlogController extends Controller
 
         $posts = BlogPost::with(['category', 'author'])
             ->where('publish_status', true)
-            ->latest()
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString()
             ->through(fn (BlogPost $post) => [
@@ -87,7 +88,8 @@ class BlogController extends Controller
                 })
                 // Rank title matches above author-only matches.
                 ->orderByRaw('CASE WHEN title LIKE ? THEN 0 ELSE 1 END', ["%{$escaped}%"])
-                ->latest()
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
                 ->paginate(10)
                 ->withQueryString();
         }
@@ -117,6 +119,7 @@ class BlogController extends Controller
             ->where('publish_status', true)
             ->orderByDesc('views')
             ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate(20)
             ->through(fn (BlogPost $post) => [
                 'slug'            => $post->slug,
@@ -218,7 +221,8 @@ class BlogController extends Controller
             ? $this->pickPosts(
                 BlogPost::published()->whereNotIn('id', $excludeIds)
                     ->where('author_id', $post->author_id)
-                    ->orderByDesc('created_at'),
+                    ->orderByDesc('created_at')
+                    ->orderByDesc('id'),
                 6,
             )
             : collect();
@@ -229,7 +233,8 @@ class BlogController extends Controller
                 BlogPost::published()->whereNotIn('id', $excludeIds)
                     ->where('category_id', $post->category_id)
                     ->orderByDesc('views')
-                    ->orderByDesc('created_at'),
+                    ->orderByDesc('created_at')
+                    ->orderByDesc('id'),
                 6,
             )
             : collect();
@@ -237,7 +242,8 @@ class BlogController extends Controller
 
         $latest = $this->pickPosts(
             BlogPost::published()->whereNotIn('id', $excludeIds)
-                ->orderByDesc('created_at'),
+                ->orderByDesc('created_at')
+                ->orderByDesc('id'),
             6,
         );
 
@@ -278,7 +284,8 @@ class BlogController extends Controller
             )
             ->orderByDesc('relevance')
             ->orderByDesc('views')
-            ->orderByDesc('created_at');
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
     }
 
     private function pickPosts(\Illuminate\Database\Eloquent\Builder $query, int $limit): \Illuminate\Support\Collection
